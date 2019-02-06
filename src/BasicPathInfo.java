@@ -1,10 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 
 public class BasicPathInfo {
     private int id;
@@ -12,7 +10,7 @@ public class BasicPathInfo {
     //private int packageId;
     private int levelId;
     private String pathId;
-    //private String seedPathId;
+    private String seedPathId;
     private int optimizationIteration;
     private double duration;
     private double finalFidelity;
@@ -22,6 +20,9 @@ public class BasicPathInfo {
     //private int clientTime;
     private Date createdAt;
     private Date updatedAt;
+
+    private List<BasicPathInfo> optimizations;
+    private BasicPathInfo seed;
 
     public static HashMap<String, BasicPathInfo> basicPathInfos;
 
@@ -44,16 +45,20 @@ public class BasicPathInfo {
         System.out.println("done initializing basicPathInfos");
     }
 
-    public BasicPathInfo(int id, Session sessionId, int levelId, String pathId, int optimizationIteration, double duration, double finalFidelity, Date createdAt, Date updatedAt) {
+    public BasicPathInfo(int id, Session sessionId, int levelId, String pathId, String seedPathId, int optimizationIteration, double duration, double finalFidelity, Date createdAt, Date updatedAt) {
         this.id = id;
         this.sessionId = sessionId;
         this.levelId = levelId;
         this.pathId = pathId;
+        this.seedPathId = seedPathId;
         this.optimizationIteration = optimizationIteration;
         this.duration = duration;
         this.finalFidelity = finalFidelity;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+
+        this.optimizations = new ArrayList<>();
+        this.seed = null;
     }
 
     public int getId() {
@@ -128,6 +133,30 @@ public class BasicPathInfo {
         this.updatedAt = updatedAt;
     }
 
+    public String getSeedPathId() {
+        return seedPathId;
+    }
+
+    public void setSeedPathId(String seedPathId) {
+        this.seedPathId = seedPathId;
+    }
+
+    public List<BasicPathInfo> getOptimizations() {
+        return optimizations;
+    }
+
+    public void setOptimizations(List<BasicPathInfo> optimizations) {
+        this.optimizations = optimizations;
+    }
+
+    public BasicPathInfo getSeed() {
+        return seed;
+    }
+
+    public void setSeed(BasicPathInfo seed) {
+        this.seed = seed;
+    }
+
     public static BasicPathInfo Parse(String str){
         //todo complete this function
         BasicPathInfo basicPathInfo = null;
@@ -142,7 +171,7 @@ public class BasicPathInfo {
             //int packageId;
             int levelId = Integer.parseInt(split[3]);
             String pathId = split[4];
-            //String seedPathId;
+            String seedPathId = split[5];
             int optimizationIteration = Integer.parseInt(split[6]);
             double duration = Double.parseDouble(split[7]);
             double finalFidelity = Double.parseDouble(split[8]);
@@ -155,9 +184,31 @@ public class BasicPathInfo {
 
             Date createdAt = formatter.parse(split[13]);
             Date updatedAt = formatter.parse(split[14]);
-            basicPathInfo = new BasicPathInfo(id, mySession, levelId, pathId, optimizationIteration, duration, finalFidelity, createdAt, updatedAt);
+            basicPathInfo = new BasicPathInfo(id, mySession, levelId, pathId, seedPathId, optimizationIteration, duration, finalFidelity, createdAt, updatedAt);
 
-            mySession.addBasicPathInfo(basicPathInfo);
+            if(pathId.equals(seedPathId)) // this is the seed...
+                mySession.addBasicPathInfo(basicPathInfo);
+            else{
+                //there is already one like me :)
+                BasicPathInfo seed = basicPathInfos.get(seedPathId);
+                if(seed != null) {
+                    basicPathInfo.seed = seed;
+                    seed.optimizations.add(basicPathInfo);
+                }
+                else{
+                    //add self to the session (no seed but I still count!
+                    mySession.addBasicPathInfo(basicPathInfo);
+
+                    //add self to optimizations to ease the process of searching optimizations
+                    basicPathInfo.optimizations.add(basicPathInfo);
+
+                    //add to the errors list
+                    FileWriter seedNotExistingErrorWriter = new FileWriter(Main.seedNotExistingErrorPath,true);
+                    seedNotExistingErrorWriter.append("" + pathId + "," + seedPathId + "\n");
+                    seedNotExistingErrorWriter.flush();
+                    seedNotExistingErrorWriter.close();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -5,6 +5,8 @@ import java.util.List;
 public class User {
     private int userId;
     private int amountOfBasicPathInfosDone;
+    private int amountOfOptimizationsDone;
+    private int averageOptimizationLevel;
     private List<Session> sessions;
 
     public static HashMap<Integer, User> users = new HashMap<>();
@@ -25,6 +27,8 @@ public class User {
         this.userId = userId;
         this.sessions = new ArrayList<>();
         this.amountOfBasicPathInfosDone = 0;
+        this.amountOfOptimizationsDone = 0;
+        this.averageOptimizationLevel = 0;
     }
 
     public int getUserId() {
@@ -53,5 +57,40 @@ public class User {
             amount += session.getBasicPathInfos().size();
         }
         amountOfBasicPathInfosDone = amount;
+    }
+
+    public int getAmountOfOptimizationsDone() {
+        return amountOfOptimizationsDone;
+    }
+
+    public void calculateAmountOfOptimizationsDone(){
+        int amount = 0;
+        for(Session session : sessions){
+            for(BasicPathInfo basicPathInfo : session.getBasicPathInfos()){
+                amount += basicPathInfo.getOptimizations().size();
+            }
+        }
+        amountOfOptimizationsDone = amount;
+    }
+
+    public int getAverageOptimizationLevel() {
+        return averageOptimizationLevel;
+    }
+
+    public void calculateAverageOptimizationLevel(){
+        double amount = 0;
+        double num = 0;
+        for(Session session : sessions){
+            for(BasicPathInfo basicPathInfo : session.getBasicPathInfos()){
+                for(BasicPathInfo opt : basicPathInfo.getOptimizations()){
+                    amount += opt.getOptimizationIteration();
+                    num++;
+                }
+            }
+        }
+        if(num != 0)
+            averageOptimizationLevel = (int)(amount / num);
+        else
+            averageOptimizationLevel = 0;
     }
 }
