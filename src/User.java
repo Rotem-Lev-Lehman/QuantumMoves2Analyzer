@@ -6,7 +6,7 @@ public class User {
     private int userId;
     private int amountOfBasicPathInfosDone;
     private int amountOfOptimizationsDone;
-    private int averageOptimizationLevel;
+    private double averageOptimizationLevel;
     private List<Session> sessions;
 
     public static HashMap<Integer, User> users = new HashMap<>();
@@ -73,7 +73,7 @@ public class User {
         amountOfOptimizationsDone = amount;
     }
 
-    public int getAverageOptimizationLevel() {
+    public double getAverageOptimizationLevel() {
         return averageOptimizationLevel;
     }
 
@@ -89,7 +89,7 @@ public class User {
             }
         }
         if(num != 0)
-            averageOptimizationLevel = (int)(amount / num);
+            averageOptimizationLevel = (amount / num);
         else
             averageOptimizationLevel = 0;
     }

@@ -25,6 +25,8 @@ public class Main {
         String sessionsDataPath = resultsPath + "\\sessionsData.csv";
         String amountsOfOptimizationsPath = resultsPath + "\\amountsOfOptimizationsData.csv";
         String amountsOfIterationsOfOptimizationsPath =  resultsPath + "\\amountsOfIterationsOfOptimizationsData.csv";
+        String userAndAmountOfOptimizationsDataPath = resultsPath + "\\userAndAmountOfOptimizationsData.csv";
+        String usersAndAvgOfLevelOfOptimizationsDataPath = resultsPath + "\\usersAndAvgOfLevelOfOptimizationsData.csv";
 
         Session.initializeSessions(sessionsPath);
         BasicPathInfo.initializeBasicPathInfos(basicPathInfoPath);
@@ -34,7 +36,9 @@ public class Main {
         //amountsOfBasicPathInfosCalculations(amountsPath);
         //sessionsDataCalculations(sessionsDataPath);
         //amountsOfOptimizationsCalculations(amountsOfOptimizationsPath);
-        amountsOfIterationsOfOptimizationsCalculations(amountsOfIterationsOfOptimizationsPath);
+        //amountsOfIterationsOfOptimizationsCalculations(amountsOfIterationsOfOptimizationsPath);
+        usersAndAmountOfOptimizationsDataCalculations(userAndAmountOfOptimizationsDataPath);
+        usersAndAvgOfLevelOfOptimizationsDataCalculations(usersAndAvgOfLevelOfOptimizationsDataPath);
     }
 
     private static void initializeErrorsPath(){
@@ -52,6 +56,43 @@ public class Main {
         }
     }
 
+    public static void usersAndAvgOfLevelOfOptimizationsDataCalculations(String path){
+        System.out.println("Starting to calculate users and avg of level of optimizations data");
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+            writer.append("user id, avg of level of optimizations\n");
+            for(User user : User.users.values()){
+                user.calculateAverageOptimizationLevel();
+                writer.append("" + user.getUserId() + "," + user.getAverageOptimizationLevel() + "\n");
+            }
+
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Finished calculating users and avg of level of optimizations data");
+    }
+
+    public static void usersAndAmountOfOptimizationsDataCalculations(String path){
+        System.out.println("Starting to calculate users and amount of optimizations data");
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+            writer.append("user id, amount of optimizations\n");
+            for(User user : User.users.values()){
+                user.calculateAmountOfOptimizationsDone();
+                writer.append("" + user.getUserId() + "," + user.getAmountOfOptimizationsDone() + "\n");
+            }
+
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Finished calculating users and amount of optimizations data");
+    }
+
+    /*
     public static void amountsOfIterationsOfOptimizationsCalculations(String path){
         System.out.println("Starting to calculate amounts of iterations of optimizations vector");
         try {
@@ -97,6 +138,7 @@ public class Main {
 
         System.out.println("Finished calculating amounts of iterations of optimizations vector");
     }
+    */
 
     public static void amountsOfOptimizationsCalculations(String path){
         System.out.println("Starting to calculate amounts of optimizations vector");
