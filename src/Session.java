@@ -10,11 +10,13 @@ public class Session {
     //private int gameId;
     //private int installId;
     private int userId;
+    private User currentUser;
     //private int metricId;
     //private String sessionToken;
     //private String authType;
     private Date createdAt;
     private Date updatedAt;
+    private List<BasicPathInfo> basicPathInfos;
 
     public static HashMap<Integer, Session> sessions;
 
@@ -40,8 +42,10 @@ public class Session {
     private Session(int id, int userId, Date createdAt, Date updatedAt) {
         this.id = id;
         this.userId = userId;
+        this.currentUser = null;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.basicPathInfos = new ArrayList<>();
     }
 
     public int getId() {
@@ -60,6 +64,14 @@ public class Session {
         this.userId = userId;
     }
 
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -76,11 +88,26 @@ public class Session {
         this.updatedAt = updatedAt;
     }
 
+    public void addBasicPathInfo(BasicPathInfo basicPathInfo){
+        basicPathInfos.add(basicPathInfo);
+    }
+
+    public List<BasicPathInfo> getBasicPathInfos() {
+        return basicPathInfos;
+    }
+
+    public void setBasicPathInfos(List<BasicPathInfo> basicPathInfos) {
+        this.basicPathInfos = basicPathInfos;
+    }
+
     private static Session Parse(String str) {
         //todo complete this function
         Session session = null;
         try {
             String[] split = str.split(";");
+            for(int i = 0; i < split.length;i++)
+                split[i] = split[i].replaceAll("\"","");
+
             int id = Integer.parseInt(split[0]);
             //int gameId;
             //int installId;
@@ -93,6 +120,8 @@ public class Session {
             Date createdAt = formatter.parse(split[7]);
             Date updatedAt = formatter.parse(split[8]);
             session = new Session(id, userId, createdAt, updatedAt);
+            User currentUser = User.addSession(session);
+            session.currentUser = currentUser;
         } catch (Exception e) {
             e.printStackTrace();
         }

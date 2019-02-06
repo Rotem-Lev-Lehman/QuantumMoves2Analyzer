@@ -108,6 +108,9 @@ public class OptimizedFidelity {
         OptimizedFidelity optimizedFidelity = null;
         try {
             String[] split = str.split(";");
+            for(int i = 0; i < split.length;i++)
+                split[i] = split[i].replaceAll("\"","");
+
             int id = Integer.parseInt(split[0]);
             String pathStr = split[3];
             BasicPathInfo pathId = BasicPathInfo.basicPathInfos.get(pathStr);

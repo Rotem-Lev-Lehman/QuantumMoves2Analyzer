@@ -133,6 +133,9 @@ public class BasicPathInfo {
         BasicPathInfo basicPathInfo = null;
         try {
             String[] split = str.split(";");
+            for(int i = 0; i < split.length;i++)
+                split[i] = split[i].replaceAll("\"","");
+
             int id = Integer.parseInt(split[0]);
             int sessionId = Integer.parseInt(split[1]);
             Session mySession = Session.sessions.get(sessionId);
@@ -153,6 +156,8 @@ public class BasicPathInfo {
             Date createdAt = formatter.parse(split[13]);
             Date updatedAt = formatter.parse(split[14]);
             basicPathInfo = new BasicPathInfo(id, mySession, levelId, pathId, optimizationIteration, duration, finalFidelity, createdAt, updatedAt);
+
+            mySession.addBasicPathInfo(basicPathInfo);
         } catch (Exception e) {
             e.printStackTrace();
         }
