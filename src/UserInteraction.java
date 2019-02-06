@@ -1,4 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Scanner;
 
 public class UserInteraction {
     private int id;
@@ -25,6 +30,28 @@ public class UserInteraction {
     //private int clientTime;
     private Date createdAt;
     private Date updatedAt;
+
+
+    public static HashMap<Integer, UserInteraction> userInteractions;
+
+    public static void initializeUserInteractions(String path){
+        System.out.println("initializing userInteractions");
+        userInteractions = new HashMap<>();
+        try {
+            Scanner scanner = new Scanner(new BufferedReader(new FileReader(path)));
+            String first = scanner.nextLine(); //delete first line...
+
+            while (scanner.hasNextLine()){
+                String line = scanner.nextLine();
+                //UserInteraction curr = UserInteraction.Parse(line);
+                //userInteractions.put(curr.id, curr);
+            }
+            scanner.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("done initializing userInteractions");
+    }
 
     public UserInteraction(int id, Session sessionId, int eventId, BasicPathInfo pathId, boolean isGhostOn, Date createdAt, Date updatedAt) {
         this.id = id;
@@ -92,7 +119,9 @@ public class UserInteraction {
         this.updatedAt = updatedAt;
     }
 
-    public UserInteraction Parse(String str){
+    /*
+    public static UserInteraction Parse(String str){
         //todo complete this function
     }
+    */
 }
