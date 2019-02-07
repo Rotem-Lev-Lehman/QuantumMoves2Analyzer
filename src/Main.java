@@ -9,6 +9,7 @@ public class Main {
     public static String errorsPath;
 
     public static String seedNotExistingErrorPath;
+    public static String duplicatesWithTheSameIdsErrorPath;
 
     public static void main(String[] args){
         mainPath = "C:\\Users\\Rotem\\Desktop\\quantum moves\\Quantum moves 2";
@@ -38,7 +39,7 @@ public class Main {
 
         //amountsOfBasicPathInfosCalculations(amountsPath);
         //sessionsDataCalculations(sessionsDataPath);
-        amountsOfOptimizationsCalculations(amountsOfOptimizationsPath,zeroOptimizationsUsers);
+        //amountsOfOptimizationsCalculations(amountsOfOptimizationsPath,zeroOptimizationsUsers);
         //amountsOfIterationsOfOptimizationsCalculations(amountsOfIterationsOfOptimizationsPath);
         //usersAndAmountOfOptimizationsDataCalculations(userAndAmountOfOptimizationsDataPath);
         //usersAndAvgOfLevelOfOptimizationsDataCalculations(usersAndAvgOfLevelOfOptimizationsDataPath);
@@ -49,6 +50,7 @@ public class Main {
         errorsPath = mainPath + "\\errorsWithTheData";
 
         seedNotExistingErrorPath = errorsPath + "\\seedNotExistingError.csv";
+        duplicatesWithTheSameIdsErrorPath = errorsPath + "\\duplicatesWithTheSameIdsError.csv";
 
         try {
             FileWriter seedNotExistingWriter = new FileWriter(seedNotExistingErrorPath);
@@ -58,8 +60,18 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        /*
+        try {
+            FileWriter seedNotExistingWriter = new FileWriter(seedNotExistingErrorPath);
+            seedNotExistingWriter.append("path id, seed id\n");
+            seedNotExistingWriter.flush();
+            seedNotExistingWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        */
     }
-
+    /*
     public static void checkErrorsWithMultipulBasicPathInfosOptimizations(String path){
         try{
             BufferedWriter writer = new BufferedWriter(new FileWriter(path));
@@ -93,7 +105,7 @@ public class Main {
         }
 
     }
-
+    */
     public static void usersAndAvgOfLevelOfOptimizationsDataCalculations(String path){
         System.out.println("Starting to calculate users and avg of level of optimizations data");
         try {

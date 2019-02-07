@@ -21,10 +21,11 @@ public class BasicPathInfo {
     private Date createdAt;
     private Date updatedAt;
 
-    private List<BasicPathInfo> optimizations;
+    private BasicPathInfo optimization;
     private BasicPathInfo seed;
 
     public static HashMap<String, BasicPathInfo> basicPathInfos;
+    private static int nextID = -1;
 
     public static void initializeBasicPathInfos(String path){
         System.out.println("initializing basicPathInfos");
@@ -57,7 +58,7 @@ public class BasicPathInfo {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
 
-        this.optimizations = new ArrayList<>();
+        this.optimization = null;
         this.seed = null;
     }
 
@@ -141,12 +142,12 @@ public class BasicPathInfo {
         this.seedPathId = seedPathId;
     }
 
-    public List<BasicPathInfo> getOptimizations() {
-        return optimizations;
+    public BasicPathInfo getOptimization() {
+        return optimization;
     }
 
-    public void setOptimizations(List<BasicPathInfo> optimizations) {
-        this.optimizations = optimizations;
+    public void setOptimization(BasicPathInfo optimization) {
+        this.optimization = optimization;
     }
 
     public BasicPathInfo getSeed() {
@@ -206,27 +207,41 @@ public class BasicPathInfo {
             Date updatedAt = formatter.parse(split[14]);
             basicPathInfo = new BasicPathInfo(id, mySession, levelId, pathId, seedPathId, optimizationIteration, duration, finalFidelity, createdAt, updatedAt);
 
-            if(pathId.equals(seedPathId)) // this is the seed...
+            BasicPathInfo seed = basicPathInfos.get(seedPathId);
+            if(pathId.equals(seedPathId)) { // this is the seed...
+                if(seed != null){
+                    //I already exist! (A fake one...)
+                    if(seed.id >=0)
+                        throw new Exception("Weird! there was not supposed to be another seed like me...");
+
+                    basicPathInfo.optimization = seed.optimization; //get the optimization back to the one it belongs to...
+                    if(basicPathInfo.optimization == null)
+                        throw new Exception("Weird! there was no optimization for the fake seed...");
+                    basicPathInfo.optimization.seed = basicPathInfo;
+
+                    mySession.removeBasicPathInfo(seed); //no need of the fake one any more...
+                    basicPathInfos.remove(seedPathId);
+                }
                 mySession.addBasicPathInfo(basicPathInfo);
+            }
             else{
                 //there is already one like me :)
-                BasicPathInfo seed = basicPathInfos.get(seedPathId);
-                if(seed != null) {
-                    basicPathInfo.seed = seed;
-                    seed.optimizations.add(basicPathInfo);
+                if(seed == null) {
+                    seed = new BasicPathInfo(nextID, mySession, levelId, seedPathId, seedPathId, optimizationIteration, duration, finalFidelity, createdAt, updatedAt);
+                    nextID--;
+                    basicPathInfos.put(seedPathId, seed);
+                    mySession.addBasicPathInfo(seed);
+
+//                    //add to the errors list
+//                    FileWriter seedNotExistingErrorWriter = new FileWriter(Main.seedNotExistingErrorPath,true);
+//                    seedNotExistingErrorWriter.append("" + pathId + "," + seedPathId + "\n");
+//                    seedNotExistingErrorWriter.flush();
+//                    seedNotExistingErrorWriter.close();
                 }
-                else{
-                    //add self to the session (no seed but I still count!
-                    mySession.addBasicPathInfo(basicPathInfo);
-
-                    //add self to optimizations to ease the process of searching optimizations
-                    basicPathInfo.optimizations.add(basicPathInfo);
-
-                    //add to the errors list
-                    FileWriter seedNotExistingErrorWriter = new FileWriter(Main.seedNotExistingErrorPath,true);
-                    seedNotExistingErrorWriter.append("" + pathId + "," + seedPathId + "\n");
-                    seedNotExistingErrorWriter.flush();
-                    seedNotExistingErrorWriter.close();
+                basicPathInfo.seed = seed;
+                if(seed.optimization != null){
+                    if(seed.optimization.optimizationIteration < basicPathInfo.optimizationIteration)
+                        seed.optimization = basicPathInfo;
                 }
             }
         } catch (Exception e) {

@@ -67,7 +67,8 @@ public class User {
         int amount = 0;
         for(Session session : sessions){
             for(BasicPathInfo basicPathInfo : session.getBasicPathInfos()){
-                amount += basicPathInfo.getOptimizations().size();
+                if(basicPathInfo.getOptimization() != null)
+                    amount++;
             }
         }
         amountOfOptimizationsDone = amount;
@@ -81,11 +82,10 @@ public class User {
         double amount = 0;
         double num = 0;
         for(Session session : sessions){
-            for(BasicPathInfo basicPathInfo : session.getBasicPathInfos()){
-                for(BasicPathInfo opt : basicPathInfo.getOptimizations()){
-                    amount += opt.getOptimizationIteration();
-                    num++;
-                }
+            for(BasicPathInfo basicPathInfo : session.getBasicPathInfos()) {
+                BasicPathInfo opt = basicPathInfo.getOptimization();
+                amount += opt.getOptimizationIteration();
+                num++;
             }
         }
         if(num != 0)

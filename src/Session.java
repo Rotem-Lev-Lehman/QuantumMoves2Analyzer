@@ -127,4 +127,8 @@ public class Session {
         }
         return session;
     }
+
+    public void removeBasicPathInfo(BasicPathInfo seed) {
+        basicPathInfos.remove(seed);
+    }
 }
