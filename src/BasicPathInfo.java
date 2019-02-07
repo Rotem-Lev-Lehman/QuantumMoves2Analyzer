@@ -157,6 +157,26 @@ public class BasicPathInfo {
         this.seed = seed;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BasicPathInfo that = (BasicPathInfo) o;
+        return levelId == that.levelId &&
+                optimizationIteration == that.optimizationIteration &&
+                Double.compare(that.duration, duration) == 0 &&
+                Double.compare(that.finalFidelity, finalFidelity) == 0 &&
+                Objects.equals(sessionId, that.sessionId) &&
+                Objects.equals(seedPathId, that.seedPathId) &&
+                Objects.equals(createdAt, that.createdAt) &&
+                Objects.equals(updatedAt, that.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sessionId, levelId, seedPathId, optimizationIteration, duration, finalFidelity, createdAt, updatedAt);
+    }
+
     public static BasicPathInfo Parse(String str){
         //todo complete this function
         BasicPathInfo basicPathInfo = null;

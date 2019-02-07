@@ -28,6 +28,9 @@ public class Main {
         String userAndAmountOfOptimizationsDataPath = resultsPath + "\\userAndAmountOfOptimizationsData.csv";
         String usersAndAvgOfLevelOfOptimizationsDataPath = resultsPath + "\\usersAndAvgOfLevelOfOptimizationsData.csv";
 
+        String duplicatesError = errorsPath + "\\duplicates.csv";
+        String zeroOptimizationsUsers = errorsPath + "\\usersWhoDoneZeroOptimizations.csv";
+
         Session.initializeSessions(sessionsPath);
         BasicPathInfo.initializeBasicPathInfos(basicPathInfoPath);
         //OptimizedFidelity.initializeOptimizedFidelities(optimizedFidelityPath);
@@ -35,10 +38,11 @@ public class Main {
 
         //amountsOfBasicPathInfosCalculations(amountsPath);
         //sessionsDataCalculations(sessionsDataPath);
-        //amountsOfOptimizationsCalculations(amountsOfOptimizationsPath);
+        amountsOfOptimizationsCalculations(amountsOfOptimizationsPath,zeroOptimizationsUsers);
         //amountsOfIterationsOfOptimizationsCalculations(amountsOfIterationsOfOptimizationsPath);
-        usersAndAmountOfOptimizationsDataCalculations(userAndAmountOfOptimizationsDataPath);
-        usersAndAvgOfLevelOfOptimizationsDataCalculations(usersAndAvgOfLevelOfOptimizationsDataPath);
+        //usersAndAmountOfOptimizationsDataCalculations(userAndAmountOfOptimizationsDataPath);
+        //usersAndAvgOfLevelOfOptimizationsDataCalculations(usersAndAvgOfLevelOfOptimizationsDataPath);
+        //checkErrorsWithMultipulBasicPathInfosOptimizations(duplicatesError);
     }
 
     private static void initializeErrorsPath(){
@@ -54,6 +58,40 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void checkErrorsWithMultipulBasicPathInfosOptimizations(String path){
+        try{
+            BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+            writer.append("seed,opt\n");
+            for(Session session : Session.sessions.values()){
+                for(BasicPathInfo basicPathInfo : session.getBasicPathInfos()){
+                    if(!basicPathInfo.getPathId().equals(basicPathInfo.getSeedPathId()))
+                        continue;
+                    int maxIterations = 0;
+                    Date curr = basicPathInfo.getCreatedAt();
+                    for(BasicPathInfo opt : basicPathInfo.getOptimizations()){
+                        if(opt.getOptimizationIteration() > maxIterations) {
+                            if (curr.after(opt.getCreatedAt()))
+                                System.out.println("problem!");
+                            curr = opt.getCreatedAt();
+                            maxIterations = opt.getOptimizationIteration();
+                        }
+                        else{
+                            if(basicPathInfo.equals(opt))
+                                writer.append("" + basicPathInfo.getPathId() + "," + opt.getPathId() + "\n");
+                        }
+                    }
+                }
+            }
+
+            writer.flush();
+            writer.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     public static void usersAndAvgOfLevelOfOptimizationsDataCalculations(String path){
@@ -140,7 +178,7 @@ public class Main {
     }
     */
 
-    public static void amountsOfOptimizationsCalculations(String path){
+    public static void amountsOfOptimizationsCalculations(String path, String path2){
         System.out.println("Starting to calculate amounts of optimizations vector");
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path));
@@ -176,6 +214,15 @@ public class Main {
                 }
             }
 
+            writer.flush();
+            writer.close();
+
+            writer = new BufferedWriter(new FileWriter(path2));
+            writer.append("user id\n");
+            for(User user : users){
+                if(user.getAmountOfOptimizationsDone() == 0)
+                    writer.append("" + user.getUserId() + "\n");
+            }
             writer.flush();
             writer.close();
         } catch (Exception e) {
