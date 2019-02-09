@@ -51,15 +51,16 @@ public class Main {
 
         seedNotExistingErrorPath = errorsPath + "\\seedNotExistingError.csv";
         duplicatesWithTheSameIdsErrorPath = errorsPath + "\\duplicatesWithTheSameIdsError.csv";
-
+        /*
         try {
-            FileWriter seedNotExistingWriter = new FileWriter(seedNotExistingErrorPath);
-            seedNotExistingWriter.append("path id, seed id\n");
+            FileWriter seedNotExistingWriter = new FileWriter(duplicatesWithTheSameIdsErrorPath);
+            seedNotExistingWriter.append("path id\n");
             seedNotExistingWriter.flush();
             seedNotExistingWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
         /*
         try {
             FileWriter seedNotExistingWriter = new FileWriter(seedNotExistingErrorPath);

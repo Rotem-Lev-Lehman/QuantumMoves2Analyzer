@@ -211,8 +211,17 @@ public class BasicPathInfo {
             if(pathId.equals(seedPathId)) { // this is the seed...
                 if(seed != null){
                     //I already exist! (A fake one...)
-                    if(seed.id >=0)
+                    if(seed.id >=0) {
+                        //add to the errors list
+                        /*
+                        FileWriter seedNotExistingErrorWriter = new FileWriter(Main.duplicatesWithTheSameIdsErrorPath,true);
+                        seedNotExistingErrorWriter.append("" + seedPathId + "\n");
+                        seedNotExistingErrorWriter.flush();
+                        seedNotExistingErrorWriter.close();
+
+                        */
                         throw new Exception("Weird! there was not supposed to be another seed like me...");
+                    }
 
                     basicPathInfo.optimization = seed.optimization; //get the optimization back to the one it belongs to...
                     if(basicPathInfo.optimization == null)
@@ -243,6 +252,8 @@ public class BasicPathInfo {
                     if(seed.optimization.optimizationIteration < basicPathInfo.optimizationIteration)
                         seed.optimization = basicPathInfo;
                 }
+                else
+                    seed.optimization = basicPathInfo;
             }
         } catch (Exception e) {
             e.printStackTrace();
