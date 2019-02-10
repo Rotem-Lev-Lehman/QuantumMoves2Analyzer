@@ -16,6 +16,9 @@ public class OptimizedFidelity {
     private Date createdAt;
     private Date updatedAt;
 
+    private OptimizedFidelity next;
+    private OptimizedFidelity previous;
+
     public static HashMap<Integer, OptimizedFidelity> optimizedFidelities;
 
     public static void initializeOptimizedFidelities(String path){

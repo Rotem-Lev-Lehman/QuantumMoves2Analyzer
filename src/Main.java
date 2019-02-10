@@ -34,7 +34,7 @@ public class Main {
 
         Session.initializeSessions(sessionsPath);
         BasicPathInfo.initializeBasicPathInfos(basicPathInfoPath);
-        //OptimizedFidelity.initializeOptimizedFidelities(optimizedFidelityPath);
+        OptimizedFidelity.initializeOptimizedFidelities(optimizedFidelityPath);
         //UserInteraction.initializeUserInteractions(userInteractionsPath);
 
         //amountsOfBasicPathInfosCalculations(amountsPath);

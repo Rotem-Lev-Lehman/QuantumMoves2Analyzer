@@ -23,6 +23,8 @@ public class BasicPathInfo {
 
     private BasicPathInfo optimization;
     private BasicPathInfo seed;
+    private OptimizedFidelity first; //will apply only to optimizations
+    private OptimizedFidelity last; //will apply only to optimizations
 
     public static HashMap<String, BasicPathInfo> basicPathInfos;
     private static int nextID = -1;
