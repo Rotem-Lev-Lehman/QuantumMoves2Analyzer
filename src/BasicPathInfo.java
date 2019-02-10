@@ -37,7 +37,8 @@ public class BasicPathInfo {
             while (scanner.hasNextLine()){
                 String line = scanner.nextLine();
                 BasicPathInfo curr = BasicPathInfo.Parse(line);
-                basicPathInfos.put(curr.pathId, curr);
+                if(curr != null)
+                    basicPathInfos.put(curr.pathId, curr);
             }
             scanner.close();
         } catch (Exception e) {
@@ -220,7 +221,8 @@ public class BasicPathInfo {
                         seedNotExistingErrorWriter.close();
 
                         */
-                        throw new Exception("Weird! there was not supposed to be another seed like me...");
+                        //throw new Exception("Weird! there was not supposed to be another seed like me...");
+                        return null; //ignore this row
                     }
 
                     basicPathInfo.optimization = seed.optimization; //get the optimization back to the one it belongs to...
