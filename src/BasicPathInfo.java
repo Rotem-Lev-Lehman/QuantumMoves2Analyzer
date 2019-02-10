@@ -23,8 +23,8 @@ public class BasicPathInfo {
 
     private BasicPathInfo optimization;
     private BasicPathInfo seed;
-    private OptimizedFidelity first; //will apply only to optimizations
-    private OptimizedFidelity last; //will apply only to optimizations
+    private OptimizedFidelity first; //will apply only to seeds
+    private OptimizedFidelity last; //will apply only to seeds
 
     public static HashMap<String, BasicPathInfo> basicPathInfos;
     private static int nextID = -1;
@@ -63,6 +63,9 @@ public class BasicPathInfo {
 
         this.optimization = null;
         this.seed = null;
+
+        this.first = null;
+        this.last = null;
     }
 
     public int getId() {
@@ -159,6 +162,22 @@ public class BasicPathInfo {
 
     public void setSeed(BasicPathInfo seed) {
         this.seed = seed;
+    }
+
+    public OptimizedFidelity getFirst() {
+        return first;
+    }
+
+    public void setFirst(OptimizedFidelity first) {
+        this.first = first;
+    }
+
+    public OptimizedFidelity getLast() {
+        return last;
+    }
+
+    public void setLast(OptimizedFidelity last) {
+        this.last = last;
     }
 
     @Override

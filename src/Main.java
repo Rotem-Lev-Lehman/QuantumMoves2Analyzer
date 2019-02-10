@@ -10,6 +10,8 @@ public class Main {
 
     public static String seedNotExistingErrorPath;
     public static String duplicatesWithTheSameIdsErrorPath;
+    public static HashSet<String> seedsDontExistButInOptimizedFidelity;
+    public static String seedsDontExistButInOptimizedFidelityPath;
 
     public static void main(String[] args){
         mainPath = "C:\\Users\\Rotem\\Desktop\\quantum moves\\Quantum moves 2";
@@ -44,6 +46,23 @@ public class Main {
         //usersAndAmountOfOptimizationsDataCalculations(userAndAmountOfOptimizationsDataPath);
         //usersAndAvgOfLevelOfOptimizationsDataCalculations(usersAndAvgOfLevelOfOptimizationsDataPath);
         //checkErrorsWithMultipulBasicPathInfosOptimizations(duplicatesError);
+        //WriteToCsvSeedsDontExistButInOptimizedFidelity();
+    }
+
+    private static void WriteToCsvSeedsDontExistButInOptimizedFidelity() {
+        try{
+            BufferedWriter writer = new BufferedWriter(new FileWriter(seedsDontExistButInOptimizedFidelityPath));
+            writer.append("seed id\n");
+            for(String seedId : seedsDontExistButInOptimizedFidelity){
+                writer.append("" + seedId + "\n");
+            }
+
+            writer.flush();
+            writer.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private static void initializeErrorsPath(){
@@ -51,6 +70,9 @@ public class Main {
 
         seedNotExistingErrorPath = errorsPath + "\\seedNotExistingError.csv";
         duplicatesWithTheSameIdsErrorPath = errorsPath + "\\duplicatesWithTheSameIdsError.csv";
+
+        seedsDontExistButInOptimizedFidelity = new HashSet<>();
+        seedsDontExistButInOptimizedFidelityPath = errorsPath + "\\seedsDontExistButInOptimizedFidelity.csv";
         /*
         try {
             FileWriter seedNotExistingWriter = new FileWriter(duplicatesWithTheSameIdsErrorPath);

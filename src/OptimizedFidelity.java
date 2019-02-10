@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class OptimizedFidelity {
     private int id;
-    private BasicPathInfo pathId;
+    private BasicPathInfo seedPath;
     private int iteration;
     private double fidelity;
     private boolean isIntermediateStep;
@@ -19,7 +19,7 @@ public class OptimizedFidelity {
     private OptimizedFidelity next;
     private OptimizedFidelity previous;
 
-    public static HashMap<Integer, OptimizedFidelity> optimizedFidelities;
+    public static HashMap<String, OptimizedFidelity> optimizedFidelities;
 
     public static void initializeOptimizedFidelities(String path){
         System.out.println("initializing optimizedFidelities");
@@ -31,7 +31,8 @@ public class OptimizedFidelity {
             while (scanner.hasNextLine()){
                 String line = scanner.nextLine();
                 OptimizedFidelity curr = OptimizedFidelity.Parse(line);
-                optimizedFidelities.put(curr.id, curr);
+                if(curr != null)
+                    optimizedFidelities.put(curr.seedPath.getSeedPathId(), curr);
             }
             scanner.close();
         } catch (Exception e) {
@@ -40,14 +41,17 @@ public class OptimizedFidelity {
         System.out.println("done initializing optimizedFidelities");
     }
 
-    public OptimizedFidelity(int id, BasicPathInfo pathId, int iteration, double fidelity, boolean isIntermediateStep, Date createdAt, Date updatedAt) {
+    public OptimizedFidelity(int id, BasicPathInfo seedPath, int iteration, double fidelity, boolean isIntermediateStep, Date createdAt, Date updatedAt) {
         this.id = id;
-        this.pathId = pathId;
+        this.seedPath = seedPath;
         this.iteration = iteration;
         this.fidelity = fidelity;
         this.isIntermediateStep = isIntermediateStep;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+
+        this.next = null;
+        this.previous = null;
     }
 
     public int getId() {
@@ -58,12 +62,12 @@ public class OptimizedFidelity {
         this.id = id;
     }
 
-    public BasicPathInfo getPathId() {
-        return pathId;
+    public BasicPathInfo getSeedPath() {
+        return seedPath;
     }
 
-    public void setPathId(BasicPathInfo pathId) {
-        this.pathId = pathId;
+    public void setSeedPath(BasicPathInfo seedPath) {
+        this.seedPath = seedPath;
     }
 
     public int getIteration() {
@@ -106,6 +110,22 @@ public class OptimizedFidelity {
         this.updatedAt = updatedAt;
     }
 
+    public OptimizedFidelity getNext() {
+        return next;
+    }
+
+    public void setNext(OptimizedFidelity next) {
+        this.next = next;
+    }
+
+    public OptimizedFidelity getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(OptimizedFidelity previous) {
+        this.previous = previous;
+    }
+
     private static OptimizedFidelity Parse(String str){
         //todo complete this function
         OptimizedFidelity optimizedFidelity = null;
@@ -115,8 +135,8 @@ public class OptimizedFidelity {
                 split[i] = split[i].replaceAll("\"","");
 
             int id = Integer.parseInt(split[0]);
-            String pathStr = split[3];
-            BasicPathInfo pathId = BasicPathInfo.basicPathInfos.get(pathStr);
+            String seedPathStr = split[4]; //seed path id
+            BasicPathInfo seedPathId = BasicPathInfo.basicPathInfos.get(seedPathStr);
             int iteration = Integer.parseInt(split[5]);
             double fidelity = Double.parseDouble(split[6]);
             int isIntermediateStepInt = Integer.parseInt(split[7]);
@@ -126,9 +146,48 @@ public class OptimizedFidelity {
 
             Date createdAt = formatter.parse(split[9]);
             Date updatedAt = formatter.parse(split[10]);
-            optimizedFidelity = new OptimizedFidelity(id, pathId, iteration, fidelity, isIntermediateStep, createdAt, updatedAt);
+            optimizedFidelity = new OptimizedFidelity(id, seedPathId, iteration, fidelity, isIntermediateStep, createdAt, updatedAt);
+
+            if(seedPathId == null) {
+                //add to errors set
+                //Main.seedsDontExistButInOptimizedFidelity.add(seedPathStr);
+                //throw the exception
+                throw new Exception("seed does not exist");
+            }
+
+            OptimizedFidelity first = seedPathId.getFirst();
+            OptimizedFidelity last = seedPathId.getLast();
+
+            if(first == null){
+                if(last != null)
+                    throw new Exception("The last must be null if the first is null");
+
+                if(iteration > 1 || !isIntermediateStep)
+                    throw new Exception("The sample should have had iteration = 1 and should be an intermediate step");
+
+                seedPathId.setFirst(optimizedFidelity);
+                seedPathId.setLast(optimizedFidelity);
+            }
+            else {
+                if (last == null)
+                    throw new Exception("The last can't be null if the first is not null");
+
+                if (last.iteration == optimizedFidelity.iteration) {
+                    if (!last.isIntermediateStep || optimizedFidelity.isIntermediateStep)
+                        throw new Exception("The last must be an intermediate step and the current must be a final step");
+                } else if (last.iteration != optimizedFidelity.iteration - 1) {
+                    throw new Exception("There must be a linear approach...");
+                }
+
+                //its all good, set everything up!
+                last.next = optimizedFidelity;
+                optimizedFidelity.previous = last;
+
+                seedPathId.setLast(optimizedFidelity);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
         return optimizedFidelity;
     }
