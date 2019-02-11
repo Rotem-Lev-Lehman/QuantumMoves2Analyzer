@@ -152,7 +152,8 @@ public class OptimizedFidelity {
                 //add to errors set
                 //Main.seedsDontExistButInOptimizedFidelity.add(seedPathStr);
                 //throw the exception
-                throw new Exception("seed does not exist");
+                //throw new Exception("seed does not exist");
+                return null;
             }
 
             OptimizedFidelity first = seedPathId.getFirst();
@@ -162,8 +163,13 @@ public class OptimizedFidelity {
                 if(last != null)
                     throw new Exception("The last must be null if the first is null");
 
-                if(iteration > 1 || !isIntermediateStep)
-                    throw new Exception("The sample should have had iteration = 1 and should be an intermediate step");
+                //if(iteration > 1 && !isIntermediateStep)
+                if(iteration > 1) {
+                    //add to errors set
+                    //Main.MissingOptimizationsOptimizedFidelity.add(seedPathStr);
+                    //throw the exception
+                    //throw new Exception("The sample should have had iteration <= 1");
+                }
 
                 seedPathId.setFirst(optimizedFidelity);
                 seedPathId.setLast(optimizedFidelity);
@@ -173,10 +179,19 @@ public class OptimizedFidelity {
                     throw new Exception("The last can't be null if the first is not null");
 
                 if (last.iteration == optimizedFidelity.iteration) {
-                    if (!last.isIntermediateStep || optimizedFidelity.isIntermediateStep)
-                        throw new Exception("The last must be an intermediate step and the current must be a final step");
+                    if (!last.isIntermediateStep || optimizedFidelity.isIntermediateStep) {
+                        //add to errors set
+                        //Main.ResetOfIterationsOptimizedFidelity.add(new StringIntTuple(seedPathStr,iteration));
+                        //throw new Exception("The last must be an intermediate step and the current must be a final step");
+
+                        //this error may just be ignored... lets assume the next iterations will be proceeding in the same way it would have when the iterations were ok
+                    }
                 } else if (last.iteration != optimizedFidelity.iteration - 1) {
-                    throw new Exception("There must be a linear approach...");
+                    //if(!Main.ResetOfIterationsOptimizedFidelity.contains(new StringIntTuple(seedPathStr,last.iteration)))
+                      //  Main.MissingOptimizationsOptimizedFidelity.add(seedPathStr);
+                    //throw new Exception("There must be a linear approach...");
+
+                    //also can be ignored...
                 }
 
                 //its all good, set everything up!

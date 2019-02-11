@@ -8,10 +8,18 @@ public class Main {
     public static String resultsPath;
     public static String errorsPath;
 
+
     public static String seedNotExistingErrorPath;
     public static String duplicatesWithTheSameIdsErrorPath;
+
     public static HashSet<String> seedsDontExistButInOptimizedFidelity;
     public static String seedsDontExistButInOptimizedFidelityPath;
+
+    public static HashSet<String> MissingOptimizationsOptimizedFidelity;
+    public static String MissingOptimizationsOptimizedFidelityPath;
+
+    public static HashSet<StringIntTuple> ResetOfIterationsOptimizedFidelity;
+    public static String ResetOfIterationsOptimizedFidelityPath;
 
     public static void main(String[] args){
         mainPath = "C:\\Users\\Rotem\\Desktop\\quantum moves\\Quantum moves 2";
@@ -47,6 +55,9 @@ public class Main {
         //usersAndAvgOfLevelOfOptimizationsDataCalculations(usersAndAvgOfLevelOfOptimizationsDataPath);
         //checkErrorsWithMultipulBasicPathInfosOptimizations(duplicatesError);
         //WriteToCsvSeedsDontExistButInOptimizedFidelity();
+        //WriteToCsvMissingOptimizationsOptimizedFidelity();
+        //WriteToCsvResetOfIterationsOptimizedFidelity();
+
     }
 
     private static void WriteToCsvSeedsDontExistButInOptimizedFidelity() {
@@ -65,6 +76,38 @@ public class Main {
         }
     }
 
+    private static void WriteToCsvMissingOptimizationsOptimizedFidelity() {
+        try{
+            BufferedWriter writer = new BufferedWriter(new FileWriter(MissingOptimizationsOptimizedFidelityPath));
+            writer.append("seed id\n");
+            for(String seedId : MissingOptimizationsOptimizedFidelity){
+                writer.append("" + seedId + "\n");
+            }
+
+            writer.flush();
+            writer.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private static void WriteToCsvResetOfIterationsOptimizedFidelity() {
+        try{
+            BufferedWriter writer = new BufferedWriter(new FileWriter(ResetOfIterationsOptimizedFidelityPath));
+            writer.append("seed id,iteration of reset\n");
+            for(StringIntTuple tuple : ResetOfIterationsOptimizedFidelity){
+                writer.append("" + tuple.str + "," + tuple.num + "\n");
+            }
+
+            writer.flush();
+            writer.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private static void initializeErrorsPath(){
         errorsPath = mainPath + "\\errorsWithTheData";
 
@@ -73,6 +116,13 @@ public class Main {
 
         seedsDontExistButInOptimizedFidelity = new HashSet<>();
         seedsDontExistButInOptimizedFidelityPath = errorsPath + "\\seedsDontExistButInOptimizedFidelity.csv";
+
+        MissingOptimizationsOptimizedFidelity = new HashSet<>();
+        MissingOptimizationsOptimizedFidelityPath = errorsPath + "\\MissingOptimizationsOptimizedFidelity.csv";
+
+        ResetOfIterationsOptimizedFidelity = new HashSet<>();
+        ResetOfIterationsOptimizedFidelityPath = errorsPath + "\\ResetOfIterationsOptimizedFidelity.csv";
+
         /*
         try {
             FileWriter seedNotExistingWriter = new FileWriter(duplicatesWithTheSameIdsErrorPath);
