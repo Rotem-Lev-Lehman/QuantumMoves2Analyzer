@@ -38,6 +38,7 @@ public class Main {
         String amountsOfIterationsOfOptimizationsPath =  resultsPath + "\\amountsOfIterationsOfOptimizationsData.csv";
         String userAndAmountOfOptimizationsDataPath = resultsPath + "\\userAndAmountOfOptimizationsData.csv";
         String usersAndAvgOfLevelOfOptimizationsDataPath = resultsPath + "\\usersAndAvgOfLevelOfOptimizationsData.csv";
+        String checkWhenTheUsersStopsOptimizationPath = resultsPath + "\\checkWhenTheUsersStopsOptimization.csv";
 
         String duplicatesError = errorsPath + "\\duplicates.csv";
         String zeroOptimizationsUsers = errorsPath + "\\usersWhoDoneZeroOptimizations.csv";
@@ -57,6 +58,7 @@ public class Main {
         //WriteToCsvSeedsDontExistButInOptimizedFidelity();
         //WriteToCsvMissingOptimizationsOptimizedFidelity();
         //WriteToCsvResetOfIterationsOptimizedFidelity();
+        checkWhenTheUserStopsOptimization(checkWhenTheUsersStopsOptimizationPath);
 
     }
 
@@ -179,6 +181,38 @@ public class Main {
 
     }
     */
+
+    public static void checkWhenTheUserStopsOptimization(String path){
+        System.out.println("Starting to check When The User Stops Optimization");
+
+        try{
+            BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+            writer.append("diff of last iteration\n");
+            for(User user : User.users.values()){
+                for(Session session : user.getSessions()){
+                    for(BasicPathInfo seed : session.getBasicPathInfos()){ // move on the seeds
+                        OptimizedFidelity last = seed.getLast();
+                        if(last != null) {
+                            // it's not a non optimized path
+                            OptimizedFidelity prev = last.getPrevious();
+                            if(prev != null && last != prev){
+                                // it has at least two optimized fidelities
+                                double fidelityDiff = last.getFidelity() - prev.getFidelity();
+                                writer.append("" + fidelityDiff + "\n");
+                            }
+                        }
+                    }
+                }
+            }
+            writer.flush();
+            writer.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Finished checking When The User Stops Optimization");
+    }
+
     public static void usersAndAvgOfLevelOfOptimizationsDataCalculations(String path){
         System.out.println("Starting to calculate users and avg of level of optimizations data");
         try {
