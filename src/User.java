@@ -8,6 +8,16 @@ public class User {
     private int amountOfOptimizationsDone;
     private double averageOptimizationLevel;
     private List<Session> sessions;
+    private double[][] highScoreTimeBinLevelWithOptimization;
+    private double[][] averageScoreTimeBinLevelWithOptimization;
+    private double[][] highScoreTimeBinLevelWithoutOptimization;
+    private double[][] averageScoreTimeBinLevelWithoutOptimization;
+    private int[][] numWithOptimization;
+    private int[][] numWithoutOptimization;
+    private boolean alreadyCalculatedScores;
+
+    public static final int levelsNum = 20;
+    public static final int timeBinsNum = 12;
 
     public static HashMap<Integer, User> users = new HashMap<>();
 
@@ -29,6 +39,40 @@ public class User {
         this.amountOfBasicPathInfosDone = 0;
         this.amountOfOptimizationsDone = 0;
         this.averageOptimizationLevel = 0;
+
+        this.highScoreTimeBinLevelWithOptimization = new double[levelsNum][];
+        this.averageScoreTimeBinLevelWithOptimization = new double[levelsNum][];
+
+        this.highScoreTimeBinLevelWithoutOptimization = new double[levelsNum][];
+        this.averageScoreTimeBinLevelWithoutOptimization = new double[levelsNum][];
+
+        this.numWithOptimization = new int[levelsNum][];
+        this.numWithoutOptimization = new int[levelsNum][];
+
+        this.alreadyCalculatedScores = false;
+
+        for(int i = 0; i < levelsNum; i++)
+        {
+            this.highScoreTimeBinLevelWithOptimization[i] = new double[timeBinsNum];
+            this.averageScoreTimeBinLevelWithOptimization[i] = new double[timeBinsNum];
+
+            this.highScoreTimeBinLevelWithoutOptimization[i] = new double[timeBinsNum];
+            this.averageScoreTimeBinLevelWithoutOptimization[i] = new double[timeBinsNum];
+
+            this.numWithOptimization[i] = new int[timeBinsNum];
+            this.numWithoutOptimization[i] = new int[timeBinsNum];
+
+            for(int j = 0; j < timeBinsNum; j++){
+                this.highScoreTimeBinLevelWithOptimization[i][j] = 0;
+                this.averageScoreTimeBinLevelWithOptimization[i][j] = 0;
+
+                this.highScoreTimeBinLevelWithoutOptimization[i][j] = 0;
+                this.averageScoreTimeBinLevelWithoutOptimization[i][j] = 0;
+
+                this.numWithOptimization[i][j] = 0;
+                this.numWithoutOptimization[i][j] = 0;
+            }
+        }
     }
 
     public int getUserId() {
@@ -92,5 +136,73 @@ public class User {
             averageOptimizationLevel = (amount / num);
         else
             averageOptimizationLevel = 0;
+    }
+
+    public double getHighScoreTimeBinLevelWithOptimization(int levelId, int timeBin) {
+        return highScoreTimeBinLevelWithOptimization[levelId][timeBin];
+    }
+
+    public double getAverageScoreTimeBinLevelWithOptimization(int levelId, int timeBin) {
+        return averageScoreTimeBinLevelWithOptimization[levelId][timeBin];
+    }
+
+    public double getHighScoreTimeBinLevelWithoutOptimization(int levelId, int timeBin) {
+        return highScoreTimeBinLevelWithoutOptimization[levelId][timeBin];
+    }
+
+    public double getAverageScoreTimeBinLevelWithoutOptimization(int levelId, int timeBin) {
+        return averageScoreTimeBinLevelWithoutOptimization[levelId][timeBin];
+    }
+
+    public void calculateScoresTimeBinLevel(){
+        if(alreadyCalculatedScores)
+            return;
+        alreadyCalculatedScores = true;
+
+        for(Session session : sessions){
+            for(BasicPathInfo seed : session.getBasicPathInfos()){
+                int levelId = seed.getLevelId();
+                int timeBin = (int)Math.floor(seed.getDuration()*10);
+                if(timeBin == 12)
+                    timeBin = 11;
+                OptimizedFidelity last = seed.getLast();
+                if(last != null)
+                {
+                    //calculate with:
+                    double scoreWith = last.getFidelity();
+
+                    if(highScoreTimeBinLevelWithOptimization[levelId][timeBin] < scoreWith)
+                        highScoreTimeBinLevelWithOptimization[levelId][timeBin] = scoreWith;
+
+                    averageScoreTimeBinLevelWithOptimization[levelId][timeBin] += scoreWith;
+                    numWithOptimization[levelId][timeBin]++;
+                }
+
+                //calculate without:
+                double scoreWithout = seed.getFinalFidelity();
+
+                if(highScoreTimeBinLevelWithoutOptimization[levelId][timeBin] < scoreWithout)
+                    highScoreTimeBinLevelWithoutOptimization[levelId][timeBin] = scoreWithout;
+
+                averageScoreTimeBinLevelWithoutOptimization[levelId][timeBin] += scoreWithout;
+                numWithoutOptimization[levelId][timeBin]++;
+            }
+        }
+
+        //calculate avg:
+        for(int i = 0; i < levelsNum; i++){
+            for(int j = 0; j < timeBinsNum; j++){
+                if(numWithoutOptimization[i][j] > 0)
+                    averageScoreTimeBinLevelWithoutOptimization[i][j] /= numWithoutOptimization[i][j];
+                else
+                    averageScoreTimeBinLevelWithoutOptimization[i][j] = 0;
+
+                if(numWithOptimization[i][j] > 0)
+                    averageScoreTimeBinLevelWithOptimization[i][j] /= numWithOptimization[i][j];
+                else
+                    averageScoreTimeBinLevelWithOptimization[i][j] = 0;
+            }
+        }
+        //done
     }
 }
