@@ -72,6 +72,24 @@ public class Main {
         //checkWhenTheUserStopsOptimization(checkWhenTheUsersStopsOptimizationPath);
         //checkTimeBinsScoresForEachLevel(timeBinsHighScoreWithOptimizationMeanPath,timeBinsAvgScoreWithOptimizationMeanPath,timeBinsHighScoreWithoutOptimizationMeanPath,timeBinsAvgScoreWithoutOptimizationMeanPath,timeBinsHighScoreWithOptimizationSDPath,timeBinsAvgScoreWithOptimizationSDPath,timeBinsHighScoreWithoutOptimizationSDPath,timeBinsAvgScoreWithoutOptimizationSDPath);
 
+
+        //Run testers:
+        //runFirstTester();
+    }
+
+    private static void runFirstTester() {
+        System.out.println("Starting first tester");
+
+        String firstResults = resultsPath + "\\firstResults";
+        String firstErrors = errorsPath + "\\firstErrors";
+
+        FirstTester firstTester = new FirstTester(firstResults, firstErrors);
+
+        //firstTester.HowMuchPressedOptimizationInEveryTimeBinAndLevel();
+        //firstTester.levelNumForMaxScoreWithAndWithoutOptimization();
+        //firstTester.OptimizationsAverageOfDifferences();
+
+        System.out.println("Done first tester");
     }
 
     private static void WriteToCsvSeedsDontExistButInOptimizedFidelity() {

@@ -154,6 +154,35 @@ public class User {
         return averageScoreTimeBinLevelWithoutOptimization[levelId][timeBin];
     }
 
+    public TwoIntAndOneDoubleTuple getLevelIdAndTimeBinMaxScoreWithOptimization() {
+        return getLevelIdAndTimeBinMaxScore(highScoreTimeBinLevelWithOptimization);
+    }
+
+    public TwoIntAndOneDoubleTuple getLevelIdAndTimeBinMaxScoreWithoutOptimization(){
+        return getLevelIdAndTimeBinMaxScore(highScoreTimeBinLevelWithoutOptimization);
+    }
+
+    private TwoIntAndOneDoubleTuple getLevelIdAndTimeBinMaxScore(double[][] array){
+        if (!alreadyCalculatedScores)
+            return null;
+
+        int maxLvl = -1;
+        int maxTimeBin = -1;
+        double maxScore = -1;
+
+        for (int i = 0; i < levelsNum; i++) {
+            for (int j = 0; j < timeBinsNum; j++) {
+                if (maxScore < array[i][j]) {
+                    maxScore = array[i][j];
+                    maxLvl = i;
+                    maxTimeBin = j;
+                }
+            }
+        }
+
+        return new TwoIntAndOneDoubleTuple(maxLvl, maxTimeBin, maxScore);
+    }
+
     public void calculateScoresTimeBinLevel(){
         if(alreadyCalculatedScores)
             return;
