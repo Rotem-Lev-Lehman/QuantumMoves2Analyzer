@@ -59,7 +59,7 @@ public class FirstTester extends Tester {
         String withPath = resultsFolder + "\\levelNumForMaxScoreWithOptimization.csv";
         String withoutPath = resultsFolder + "\\levelNumForMaxScoreWithoutOptimization.csv";
 
-        double threshHold = 0.1;
+        double threshHold = 0;
         try{
             BufferedWriter withWriter = new BufferedWriter(new FileWriter(withPath));
             BufferedWriter withoutWriter = new BufferedWriter(new FileWriter(withoutPath));
@@ -73,9 +73,9 @@ public class FirstTester extends Tester {
                 TwoIntAndOneDoubleTuple with = user.getLevelIdAndTimeBinMaxScoreWithOptimization();
                 TwoIntAndOneDoubleTuple without = user.getLevelIdAndTimeBinMaxScoreWithoutOptimization();
 
-                if(with.getThird() >= threshHold)
+                if(with.getThird() > threshHold)
                     withWriter.append("" + user.getUserId() + "," + with.toString() + "\n");
-                if(without.getThird() >= threshHold)
+                if(without.getThird() > threshHold)
                     withoutWriter.append("" + user.getUserId() + "," + without.toString() + "\n");
             }
 
