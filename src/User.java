@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class User {
     private int userId;
@@ -15,6 +13,10 @@ public class User {
     private int[][] numWithOptimization;
     private int[][] numWithoutOptimization;
     private boolean alreadyCalculatedScores;
+
+    private List<List<BasicPathInfo>> rankOfBasicPathInfosByScore;
+    private final int divisionNumForRankOfBasicPathInfosByScore = 10; //each is 10% of population(seeds)
+    private boolean alreadyCalculatedRankOfBasicPathInfosByScore;
 
     public static final int levelsNum = 20;
     public static final int timeBinsNum = 12;
@@ -73,6 +75,12 @@ public class User {
                 this.numWithoutOptimization[i][j] = 0;
             }
         }
+
+        this.rankOfBasicPathInfosByScore = new ArrayList<>(divisionNumForRankOfBasicPathInfosByScore);
+        for(int i = 0; i < divisionNumForRankOfBasicPathInfosByScore; i++){
+            this.rankOfBasicPathInfosByScore.add(new ArrayList<>());
+        }
+        alreadyCalculatedRankOfBasicPathInfosByScore = false;
     }
 
     public int getUserId() {
@@ -233,5 +241,37 @@ public class User {
             }
         }
         //done
+    }
+
+    public void calculateFidelityRankingOf_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt() {
+        calculateRankOfBasicPathInfosByScore();
+        //todo - continue from here
+        continue me;
+    }
+
+    private void calculateRankOfBasicPathInfosByScore(){
+        if(alreadyCalculatedRankOfBasicPathInfosByScore)
+            return;
+        alreadyCalculatedRankOfBasicPathInfosByScore = true;
+
+        PriorityQueue<BasicPathInfo> seedsByOrder = new PriorityQueue<>((o1, o2) -> {
+            return Double.compare(o2.getFinalFidelity(), o1.getFinalFidelity()); //order from largest fidelity to smallest
+        });
+
+        //add all by the order
+        for(Session session : sessions){
+            for(BasicPathInfo seed : session.getBasicPathInfos()){
+                if(!seed.isOptimizableLevel() || !seed.isSeed()) // only count optimizable levels and real seeds
+                    continue;
+
+                seedsByOrder.add(seed);
+            }
+        }
+        //split into the different groups
+        //todo - continue from here
+        continue me;
+        for(int i = 0; i < divisionNumForRankOfBasicPathInfosByScore; i++){
+
+        }
     }
 }

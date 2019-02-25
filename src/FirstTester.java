@@ -129,4 +129,28 @@ public class FirstTester extends Tester {
 
         System.out.println("Done OptimizationsAverageOfDifferences");
     }
+
+    public void rankOfFidelityForEachUserCheck_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt(){
+        System.out.println("Starting rankOfFidelityForEachUserCheck_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt");
+
+        String pathNumOfPress = resultsFolder + "\\rankOfFidelityForEachUserCheck_NumOfPressOnOpt.csv";
+
+        try{
+            BufferedWriter writerNumOfPress = new BufferedWriter(new FileWriter(pathNumOfPress));
+
+            for(User user : User.users.values()){
+                user.calculateAmountOfOptimizationsDone();
+                if(user.getAmountOfOptimizationsDone() == 0) // only users who have done at least one optimization are counted in this calculation...
+                    continue;
+
+                user.calculateFidelityRankingOf_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt();
+                //todo - continue from here
+                continue me;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Done rankOfFidelityForEachUserCheck_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt");
+    }
 }

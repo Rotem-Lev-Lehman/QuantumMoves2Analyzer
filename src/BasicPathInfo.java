@@ -283,4 +283,18 @@ public class BasicPathInfo {
         }
         return basicPathInfo;
     }
+
+    /**
+     * @return true if the level can be optimized(num 6-20) or false otherwise(num 0-5)
+     */
+    public boolean isOptimizableLevel() {
+        return levelId > 5;
+    }
+
+    /**
+     * @return true if the path is a seed (seedPathId == pathId)
+     */
+    public boolean isSeed() {
+        return seedPathId.equals(pathId);
+    }
 }
