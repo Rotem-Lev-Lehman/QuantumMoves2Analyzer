@@ -88,6 +88,7 @@ public class Main {
         //firstTester.HowMuchPressedOptimizationInEveryTimeBinAndLevel();
         //firstTester.levelNumForMaxScoreWithAndWithoutOptimization();
         //firstTester.OptimizationsAverageOfDifferences();
+        //firstTester.rankOfFidelityForEachUserCheck_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt();
 
         System.out.println("Done first tester");
     }

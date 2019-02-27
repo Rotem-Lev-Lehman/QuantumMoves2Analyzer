@@ -15,8 +15,10 @@ public class User {
     private boolean alreadyCalculatedScores;
 
     private List<List<BasicPathInfo>> rankOfBasicPathInfosByScore;
-    private final int divisionNumForRankOfBasicPathInfosByScore = 10; //each is 10% of population(seeds)
+    public static final int divisionNumForRankOfBasicPathInfosByScore = 10; //each is 10% of population(seeds)
     private boolean alreadyCalculatedRankOfBasicPathInfosByScore;
+    private double[] numOfPressOnOptForEachRank;
+    private double[] improvementInFidelityForEachRank;
 
     public static final int levelsNum = 20;
     public static final int timeBinsNum = 12;
@@ -77,8 +79,12 @@ public class User {
         }
 
         this.rankOfBasicPathInfosByScore = new ArrayList<>(divisionNumForRankOfBasicPathInfosByScore);
+        this.numOfPressOnOptForEachRank = new double[divisionNumForRankOfBasicPathInfosByScore];
+        this.improvementInFidelityForEachRank = new double[divisionNumForRankOfBasicPathInfosByScore];
         for(int i = 0; i < divisionNumForRankOfBasicPathInfosByScore; i++){
             this.rankOfBasicPathInfosByScore.add(new ArrayList<>());
+            this.numOfPressOnOptForEachRank[i] = 0;
+            this.improvementInFidelityForEachRank[i] = 0;
         }
         alreadyCalculatedRankOfBasicPathInfosByScore = false;
     }
@@ -243,10 +249,32 @@ public class User {
         //done
     }
 
+    public double[] getNumOfPressOnOptForEachRank() {
+        return numOfPressOnOptForEachRank;
+    }
+
+    public double[] getImprovementInFidelityForEachRank() {
+        return improvementInFidelityForEachRank;
+    }
+
     public void calculateFidelityRankingOf_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt() {
         calculateRankOfBasicPathInfosByScore();
-        //todo - continue from here
-        continue me;
+
+        for(int i = 0; i < divisionNumForRankOfBasicPathInfosByScore; i++){
+            for(BasicPathInfo seed : rankOfBasicPathInfosByScore.get(i)) {
+                BasicPathInfo opt = seed.getOptimization();
+                if (opt != null) {
+                    numOfPressOnOptForEachRank[i]++;
+                    improvementInFidelityForEachRank[i] += (opt.getFinalFidelity() - seed.getFinalFidelity());
+                }
+            }
+            if(numOfPressOnOptForEachRank[i] > 0){
+                improvementInFidelityForEachRank[i] /= numOfPressOnOptForEachRank[i];
+                numOfPressOnOptForEachRank[i] /= rankOfBasicPathInfosByScore.get(i).size();
+            }
+        }
+
+        //done :)
     }
 
     private void calculateRankOfBasicPathInfosByScore(){
@@ -267,11 +295,26 @@ public class User {
                 seedsByOrder.add(seed);
             }
         }
-        //split into the different groups
-        //todo - continue from here
-        continue me;
-        for(int i = 0; i < divisionNumForRankOfBasicPathInfosByScore; i++){
 
+        //split into the different groups
+        int N = seedsByOrder.size();
+        int amountInBucket = N / divisionNumForRankOfBasicPathInfosByScore;
+        int restLeft = N % divisionNumForRankOfBasicPathInfosByScore;
+
+        for(int i = 0; i < divisionNumForRankOfBasicPathInfosByScore; i++){
+            for(int j = 0; j < amountInBucket; j++){
+                BasicPathInfo curr = seedsByOrder.poll();
+                rankOfBasicPathInfosByScore.get(i).add(curr);
+            }
+
+            //add the rest that is left
+            if(restLeft > 0){
+                BasicPathInfo curr = seedsByOrder.poll();
+                rankOfBasicPathInfosByScore.get(i).add(curr);
+
+                restLeft--;
+            }
         }
+        //done :)
     }
 }

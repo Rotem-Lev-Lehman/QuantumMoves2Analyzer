@@ -134,9 +134,22 @@ public class FirstTester extends Tester {
         System.out.println("Starting rankOfFidelityForEachUserCheck_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt");
 
         String pathNumOfPress = resultsFolder + "\\rankOfFidelityForEachUserCheck_NumOfPressOnOpt.csv";
+        String pathImprovement = resultsFolder + "\\rankOfFidelityForEachUserCheck_ImproveOfFidelityFromOpt.csv";
 
         try{
             BufferedWriter writerNumOfPress = new BufferedWriter(new FileWriter(pathNumOfPress));
+            BufferedWriter writerImprovement = new BufferedWriter(new FileWriter(pathImprovement));
+
+            writerNumOfPress.append("user id");
+            writerImprovement.append("user id");
+
+            for(int i = 0; i < User.divisionNumForRankOfBasicPathInfosByScore; i++){
+                writerNumOfPress.append(",rank " + i);
+                writerImprovement.append(",rank " + i);
+            }
+
+            writerNumOfPress.append("\n");
+            writerImprovement.append("\n");
 
             for(User user : User.users.values()){
                 user.calculateAmountOfOptimizationsDone();
@@ -144,9 +157,25 @@ public class FirstTester extends Tester {
                     continue;
 
                 user.calculateFidelityRankingOf_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt();
-                //todo - continue from here
-                continue me;
+
+                writerNumOfPress.append("" + user.getUserId());
+                writerImprovement.append("" + user.getUserId());
+
+                double[] numOfPressed = user.getNumOfPressOnOptForEachRank();
+                double[] improvement = user.getImprovementInFidelityForEachRank();
+                for(int i = 0; i < User.divisionNumForRankOfBasicPathInfosByScore; i++){
+                    writerNumOfPress.append("," + numOfPressed[i]);
+                    writerImprovement.append("," + improvement[i]);
+                }
+
+                writerNumOfPress.append("\n");
+                writerImprovement.append("\n");
             }
+
+            writerNumOfPress.flush();
+            writerNumOfPress.close();
+            writerImprovement.flush();
+            writerImprovement.close();
         } catch (Exception e){
             e.printStackTrace();
         }
