@@ -297,4 +297,12 @@ public class BasicPathInfo {
     public boolean isSeed() {
         return seedPathId.equals(pathId);
     }
+
+    public int getTimeBin(){
+        int timeBin = (int)Math.floor(duration*10);
+        if(timeBin == 12)
+            timeBin = 11;
+
+        return timeBin;
+    }
 }

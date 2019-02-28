@@ -89,6 +89,7 @@ public class Main {
         //firstTester.levelNumForMaxScoreWithAndWithoutOptimization();
         //firstTester.OptimizationsAverageOfDifferences();
         //firstTester.rankOfFidelityForEachUserCheck_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt();
+        //firstTester.TimeBinsForEachUserCheck_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt();
 
         System.out.println("Done first tester");
     }

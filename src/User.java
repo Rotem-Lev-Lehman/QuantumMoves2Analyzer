@@ -14,11 +14,18 @@ public class User {
     private int[][] numWithoutOptimization;
     private boolean alreadyCalculatedScores;
 
+    //rank division:
     private List<List<BasicPathInfo>> rankOfBasicPathInfosByScore;
     public static final int divisionNumForRankOfBasicPathInfosByScore = 10; //each is 10% of population(seeds)
     private boolean alreadyCalculatedRankOfBasicPathInfosByScore;
     private double[] numOfPressOnOptForEachRank;
     private double[] improvementInFidelityForEachRank;
+
+    //time bins division:
+    private List<List<BasicPathInfo>> rankOfBasicPathInfosByTimeBins;
+    private boolean alreadyCalculatedRankOfBasicPathInfosByTimeBins;
+    private double[] numOfPressOnOptForEachRankByTimeBins;
+    private double[] improvementInFidelityForEachRankByTimeBins;
 
     public static final int levelsNum = 20;
     public static final int timeBinsNum = 12;
@@ -78,6 +85,7 @@ public class User {
             }
         }
 
+        //division by score:
         this.rankOfBasicPathInfosByScore = new ArrayList<>(divisionNumForRankOfBasicPathInfosByScore);
         this.numOfPressOnOptForEachRank = new double[divisionNumForRankOfBasicPathInfosByScore];
         this.improvementInFidelityForEachRank = new double[divisionNumForRankOfBasicPathInfosByScore];
@@ -87,6 +95,17 @@ public class User {
             this.improvementInFidelityForEachRank[i] = 0;
         }
         alreadyCalculatedRankOfBasicPathInfosByScore = false;
+
+        //division by time bins:
+        this.rankOfBasicPathInfosByTimeBins = new ArrayList<>(timeBinsNum);
+        this.numOfPressOnOptForEachRankByTimeBins = new double[timeBinsNum];
+        this.improvementInFidelityForEachRankByTimeBins = new double[timeBinsNum];
+        for(int i = 0; i < timeBinsNum; i++){
+            this.rankOfBasicPathInfosByTimeBins.add(new ArrayList<>());
+            this.numOfPressOnOptForEachRankByTimeBins[i] = 0;
+            this.improvementInFidelityForEachRankByTimeBins[i] = 0;
+        }
+        alreadyCalculatedRankOfBasicPathInfosByTimeBins = false;
     }
 
     public int getUserId() {
@@ -205,9 +224,7 @@ public class User {
         for(Session session : sessions){
             for(BasicPathInfo seed : session.getBasicPathInfos()){
                 int levelId = seed.getLevelId();
-                int timeBin = (int)Math.floor(seed.getDuration()*10);
-                if(timeBin == 12)
-                    timeBin = 11;
+                int timeBin = seed.getTimeBin();
                 OptimizedFidelity last = seed.getLast();
                 if(last != null)
                 {
@@ -257,20 +274,32 @@ public class User {
         return improvementInFidelityForEachRank;
     }
 
+    public double[] getNumOfPressOnOptForEachRankByTimeBins() {
+        return numOfPressOnOptForEachRankByTimeBins;
+    }
+
+    public double[] getImprovementInFidelityForEachRankByTimeBins() {
+        return improvementInFidelityForEachRankByTimeBins;
+    }
+
     public void calculateFidelityRankingOf_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt() {
         calculateRankOfBasicPathInfosByScore();
 
-        for(int i = 0; i < divisionNumForRankOfBasicPathInfosByScore; i++){
-            for(BasicPathInfo seed : rankOfBasicPathInfosByScore.get(i)) {
+        calculate_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt(rankOfBasicPathInfosByScore,numOfPressOnOptForEachRank,improvementInFidelityForEachRank,divisionNumForRankOfBasicPathInfosByScore);
+    }
+
+    private void calculate_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt(List<List<BasicPathInfo>> rank, double[] numOfPressOnOpt, double[] improvementInFidelity, int size){
+        for(int i = 0; i < size; i++){
+            for(BasicPathInfo seed : rank.get(i)) {
                 BasicPathInfo opt = seed.getOptimization();
                 if (opt != null) {
-                    numOfPressOnOptForEachRank[i]++;
-                    improvementInFidelityForEachRank[i] += (opt.getFinalFidelity() - seed.getFinalFidelity());
+                    numOfPressOnOpt[i]++;
+                    improvementInFidelity[i] += (opt.getFinalFidelity() - seed.getFinalFidelity());
                 }
             }
-            if(numOfPressOnOptForEachRank[i] > 0){
-                improvementInFidelityForEachRank[i] /= numOfPressOnOptForEachRank[i];
-                numOfPressOnOptForEachRank[i] /= rankOfBasicPathInfosByScore.get(i).size();
+            if(numOfPressOnOpt[i] > 0){
+                improvementInFidelity[i] /= numOfPressOnOpt[i];
+                numOfPressOnOpt[i] /= rank.get(i).size();
             }
         }
 
@@ -315,6 +344,31 @@ public class User {
                 restLeft--;
             }
         }
+        //done :)
+    }
+
+    public void calculateTimeBinsOf_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt() {
+        calculateRankOfBasicPathInfosByTimeBins();
+
+        calculate_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt(rankOfBasicPathInfosByTimeBins, numOfPressOnOptForEachRankByTimeBins,improvementInFidelityForEachRankByTimeBins,timeBinsNum);
+    }
+
+    private void calculateRankOfBasicPathInfosByTimeBins(){
+        if(alreadyCalculatedRankOfBasicPathInfosByTimeBins)
+            return;
+        alreadyCalculatedRankOfBasicPathInfosByTimeBins = true;
+
+        //add all by the order
+        for(Session session : sessions){
+            for(BasicPathInfo seed : session.getBasicPathInfos()){
+                if(!seed.isOptimizableLevel() || !seed.isSeed()) // only count optimizable levels and real seeds
+                    continue;
+
+                int timeBin = seed.getTimeBin();
+                rankOfBasicPathInfosByTimeBins.get(timeBin).add(seed);
+            }
+        }
+
         //done :)
     }
 }
