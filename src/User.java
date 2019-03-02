@@ -27,6 +27,9 @@ public class User {
     private double[] numOfPressOnOptForEachRankByTimeBins;
     private double[] improvementInFidelityForEachRankByTimeBins;
 
+    //best seed:
+    private BasicPathInfo bestSeed;
+
     public static final int levelsNum = 20;
     public static final int timeBinsNum = 12;
 
@@ -106,6 +109,9 @@ public class User {
             this.improvementInFidelityForEachRankByTimeBins[i] = 0;
         }
         alreadyCalculatedRankOfBasicPathInfosByTimeBins = false;
+
+        //best seed:
+        this.bestSeed = null;
     }
 
     public int getUserId() {
@@ -370,5 +376,27 @@ public class User {
         }
 
         //done :)
+    }
+
+    public void calculateBestSeed(){
+        double max = 0;
+        for(Session session : sessions){
+            for(BasicPathInfo seed : session.getBasicPathInfos()){
+                if(!seed.isSeed())
+                    continue;
+
+                if(seed.getFinalFidelity() > max){
+                    max = seed.getFinalFidelity();
+                    bestSeed = seed;
+                }
+            }
+        }
+    }
+
+    public int getIterationsNumInBestSeed(){
+        if(bestSeed.getOptimization() != null)
+            return bestSeed.getOptimization().getOptimizationIteration();
+
+        return 0;
     }
 }

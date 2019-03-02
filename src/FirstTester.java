@@ -235,4 +235,32 @@ public class FirstTester extends Tester {
 
         System.out.println("Done TimeBinsForEachUserCheck_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt");
     }
+
+    public void HowMuchOptimizationsIterationsForBestSeed(){
+        System.out.println("Starting HowMuchOptimizationsIterationsForBestSeed");
+
+        String path = resultsFolder + "\\HowMuchOptimizationsIterationsForBestSeed.csv";
+
+        try{
+            BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+
+            writer.append("user id,iterations\n");
+
+            for(User user : User.users.values()){
+                user.calculateAmountOfOptimizationsDone();
+                if(user.getAmountOfOptimizationsDone() == 0) // only users who have done at least one optimization are counted in this calculation...
+                    continue;
+
+                user.calculateBestSeed();
+                writer.append("" + user.getUserId() + "," + user.getIterationsNumInBestSeed() + "\n");
+            }
+
+            writer.flush();
+            writer.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Done HowMuchOptimizationsIterationsForBestSeed");
+    }
 }

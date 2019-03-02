@@ -90,6 +90,7 @@ public class Main {
         //firstTester.OptimizationsAverageOfDifferences();
         //firstTester.rankOfFidelityForEachUserCheck_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt();
         //firstTester.TimeBinsForEachUserCheck_NumOfPressOnOpt_and_ImproveOfFidelityFromOpt();
+        //firstTester.HowMuchOptimizationsIterationsForBestSeed();
 
         System.out.println("Done first tester");
     }
