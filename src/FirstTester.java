@@ -26,10 +26,12 @@ public class FirstTester extends Tester {
             for (Session session : Session.sessions.values()) {
                 for (BasicPathInfo seed : session.getBasicPathInfos()) {
                     int levelId = seed.getLevelId();
+                    /*
                     int timeBin = (int) Math.floor(seed.getDuration() * 10);
                     if (timeBin == 12)
                         timeBin = 11;
-
+                    */
+                    int timeBin = seed.getTimeBin();
                     if (seed.getOptimization() != null) {
                         numWithOptimization[levelId][timeBin]++;
                     }

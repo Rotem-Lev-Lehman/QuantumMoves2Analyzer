@@ -23,14 +23,14 @@ public class Main {
     public static String ResetOfIterationsOptimizedFidelityPath;
 
     public static void main(String[] args){
-        mainPath = "C:\\Users\\Rotem\\Desktop\\quantum moves\\Quantum moves 2";
+        mainPath = "C:\\Users\\Rotem\\Desktop\\עבודה אצל קובי\\quantum moves\\Quantum moves 2";
         resultsPath = mainPath + "\\javaResults";
         scoresPath = resultsPath + "\\scores";
 
         initializeErrorsPath();
 
         String sessionsPath = mainPath + "\\sessions.csv";
-        String basicPathInfoPath = mainPath + "\\basic_path_info.csv";
+        String basicPathInfoPath = mainPath + "\\basic_path_info_corrected.csv";
         String optimizedFidelityPath = mainPath + "\\optimized_fidelity.csv";
         String userInteractionsPath = mainPath + "\\user_interaction.csv";
 

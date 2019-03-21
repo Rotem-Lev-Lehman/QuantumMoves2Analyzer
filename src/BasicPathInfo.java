@@ -14,6 +14,7 @@ public class BasicPathInfo {
     private int optimizationIteration;
     private double duration;
     private double finalFidelity;
+    private int timeBin;
     //private int terminationCondition;
     //private int fullPathPropagation;
     //private int nfbgsRestart;
@@ -49,7 +50,7 @@ public class BasicPathInfo {
         System.out.println("done initializing basicPathInfos");
     }
 
-    public BasicPathInfo(int id, Session sessionId, int levelId, String pathId, String seedPathId, int optimizationIteration, double duration, double finalFidelity, Date createdAt, Date updatedAt) {
+    public BasicPathInfo(int id, Session sessionId, int levelId, String pathId, String seedPathId, int optimizationIteration, double duration, double finalFidelity, int timeBin, Date createdAt, Date updatedAt) {
         this.id = id;
         this.sessionId = sessionId;
         this.levelId = levelId;
@@ -58,6 +59,9 @@ public class BasicPathInfo {
         this.optimizationIteration = optimizationIteration;
         this.duration = duration;
         this.finalFidelity = finalFidelity;
+        //new edit:
+        this.timeBin = timeBin;
+        //end of new edit
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
 
@@ -206,28 +210,68 @@ public class BasicPathInfo {
         try {
             String[] split = str.split(";");
             for(int i = 0; i < split.length;i++)
-                split[i] = split[i].replaceAll("\"","");
+                split[i] = split[i].replaceAll("\"","").replaceAll(",",".");
+            /*
+            New order:
 
-            int id = Integer.parseInt(split[0]);
+            0 - index;
+            1 - "session_id";
+            2 - "id";
+            3 - "package_id";
+            4 - "level_id";
+            5 - "path_id";
+            6 - "seed_path_id";
+            7 - "optimization_iteration";
+            8 - "duration";
+            9 - "final_fidelity";
+            10 - "termination_condition";
+            11 - "full_path_propagation";
+            12 - "nfbgs_restart";
+            13 - "client_time";
+            14 - "created_at";
+            15 - "updated_at";
+            16 - "is_optimized";
+            17 - "fidelity_db";
+            18 - "fidelity_check";
+            19 - "ret_code";
+            20 - "n_poi";
+            21 - "order_in_game";
+            22 - "level_name";
+            23 - "T_QSL";
+            24 - "dt_qengine";
+            25 - "duration_npoi";
+
+
+            26 - "time_bin"
+             */
+            int id = Integer.parseInt(split[2]); //previous: int id = Integer.parseInt(split[0]);
             int sessionId = Integer.parseInt(split[1]);
             Session mySession = Session.sessions.get(sessionId);
             //int packageId;
-            int levelId = Integer.parseInt(split[3]);
-            String pathId = split[4];
-            String seedPathId = split[5];
-            int optimizationIteration = Integer.parseInt(split[6]);
-            double duration = Double.parseDouble(split[7]);
-            double finalFidelity = Double.parseDouble(split[8]);
+            int levelId = Integer.parseInt(split[4]); //previous: int levelId = Integer.parseInt(split[3]);
+            String pathId = split[5]; //previous: String pathId = split[4];
+            String seedPathId = split[6]; //previous: String seedPathId = split[5];
+            int optimizationIteration = Integer.parseInt(split[7]); //previous: int optimizationIteration = Integer.parseInt(split[6]);
+            double duration = Double.parseDouble(split[8]); //previous: double duration = Double.parseDouble(split[7]);
+            double finalFidelity = Double.parseDouble(split[9]); //previous: double finalFidelity = Double.parseDouble(split[8]);
+            int timeBin = Integer.parseInt(split[26]); // new edit
+
+
+            /*
+            if(!checkTimeBin(timeBin, duration))
+                throw new Exception("The time bin calculation was not correct");
+            */
             //int terminationCondition;
             //int fullPathPropagation;
             //int nfbgsRestart;
             //int clientTime;
 
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-            Date createdAt = formatter.parse(split[13]);
-            Date updatedAt = formatter.parse(split[14]);
-            basicPathInfo = new BasicPathInfo(id, mySession, levelId, pathId, seedPathId, optimizationIteration, duration, finalFidelity, createdAt, updatedAt);
+            Date createdAt = formatter.parse(split[14]); //previous: Date createdAt = formatter.parse(split[13]);
+            Date updatedAt = formatter.parse(split[15]); //previous: Date updatedAt = formatter.parse(split[14]);
+            basicPathInfo = new BasicPathInfo(id, mySession, levelId, pathId, seedPathId, optimizationIteration, duration, finalFidelity, timeBin, createdAt, updatedAt);
 
             BasicPathInfo seed = basicPathInfos.get(seedPathId);
             if(pathId.equals(seedPathId)) { // this is the seed...
@@ -259,7 +303,7 @@ public class BasicPathInfo {
             else{
                 //there is already one like me :)
                 if(seed == null) {
-                    seed = new BasicPathInfo(nextID, mySession, levelId, seedPathId, seedPathId, optimizationIteration, duration, finalFidelity, createdAt, updatedAt);
+                    seed = new BasicPathInfo(nextID, mySession, levelId, seedPathId, seedPathId, optimizationIteration, duration, finalFidelity, timeBin, createdAt, updatedAt);
                     nextID--;
                     basicPathInfos.put(seedPathId, seed);
                     mySession.addBasicPathInfo(seed);
@@ -298,11 +342,22 @@ public class BasicPathInfo {
         return seedPathId.equals(pathId);
     }
 
+    private static boolean checkTimeBin(int timeBin1, double duration1){
+        int timeBin2 = (int)Math.floor(duration1*10);
+        if(timeBin2 == 12)
+            timeBin2= 11;
+
+        return timeBin1 == timeBin2;
+    }
+
     public int getTimeBin(){
+        /*
         int timeBin = (int)Math.floor(duration*10);
         if(timeBin == 12)
             timeBin = 11;
 
         return timeBin;
+        */
+        return this.timeBin;
     }
 }
