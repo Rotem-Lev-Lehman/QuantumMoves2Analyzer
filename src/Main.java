@@ -8,6 +8,7 @@ public class Main {
     public static String resultsPath;
     public static String scoresPath;
     public static String errorsPath;
+    public static String correctedBasicPathErrorsPath;
 
 
     public static String seedNotExistingErrorPath;
@@ -21,6 +22,9 @@ public class Main {
 
     public static HashSet<StringIntTuple> ResetOfIterationsOptimizedFidelity;
     public static String ResetOfIterationsOptimizedFidelityPath;
+
+    public static HashSet<StringTuple> MissingSessions;
+    public static String MissingSessionsPath;
 
     public static void main(String[] args){
         mainPath = "C:\\Users\\Rotem\\Desktop\\עבודה אצל קובי\\quantum moves\\Quantum moves 2";
@@ -72,9 +76,24 @@ public class Main {
         //checkWhenTheUserStopsOptimization(checkWhenTheUsersStopsOptimizationPath);
         //checkTimeBinsScoresForEachLevel(timeBinsHighScoreWithOptimizationMeanPath,timeBinsAvgScoreWithOptimizationMeanPath,timeBinsHighScoreWithoutOptimizationMeanPath,timeBinsAvgScoreWithoutOptimizationMeanPath,timeBinsHighScoreWithOptimizationSDPath,timeBinsAvgScoreWithOptimizationSDPath,timeBinsHighScoreWithoutOptimizationSDPath,timeBinsAvgScoreWithoutOptimizationSDPath);
 
+        //SaveErrorMissingSessions();
 
         //Run testers:
         //runFirstTester();
+    }
+
+    private static void SaveErrorMissingSessions() {
+        try {
+            FileWriter errorsWriter = new FileWriter(MissingSessionsPath);
+            errorsWriter.append("Session id,path seed id\n");
+            for(StringTuple tuple : MissingSessions){
+                errorsWriter.append(tuple.toString() + "\n");
+            }
+            errorsWriter.flush();
+            errorsWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void runFirstTester() {
@@ -146,11 +165,13 @@ public class Main {
     private static void initializeErrorsPath(){
         errorsPath = mainPath + "\\errorsWithTheData";
 
-        seedNotExistingErrorPath = errorsPath + "\\seedNotExistingError.csv";
-        duplicatesWithTheSameIdsErrorPath = errorsPath + "\\duplicatesWithTheSameIdsError.csv";
+        correctedBasicPathErrorsPath = errorsPath + "\\Corrected path errors";
 
-        seedsDontExistButInOptimizedFidelity = new HashSet<>();
-        seedsDontExistButInOptimizedFidelityPath = errorsPath + "\\seedsDontExistButInOptimizedFidelity.csv";
+        //seedNotExistingErrorPath = errorsPath + "\\seedNotExistingError.csv";
+        //duplicatesWithTheSameIdsErrorPath = errorsPath + "\\duplicatesWithTheSameIdsError.csv";
+
+        //seedsDontExistButInOptimizedFidelity = new HashSet<>();
+        //seedsDontExistButInOptimizedFidelityPath = errorsPath + "\\seedsDontExistButInOptimizedFidelity.csv";
 
         MissingOptimizationsOptimizedFidelity = new HashSet<>();
         MissingOptimizationsOptimizedFidelityPath = errorsPath + "\\MissingOptimizationsOptimizedFidelity.csv";
@@ -158,26 +179,36 @@ public class Main {
         ResetOfIterationsOptimizedFidelity = new HashSet<>();
         ResetOfIterationsOptimizedFidelityPath = errorsPath + "\\ResetOfIterationsOptimizedFidelity.csv";
 
-        /*
-        try {
-            FileWriter seedNotExistingWriter = new FileWriter(duplicatesWithTheSameIdsErrorPath);
-            seedNotExistingWriter.append("path id\n");
-            seedNotExistingWriter.flush();
-            seedNotExistingWriter.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
-        /*
-        try {
-            FileWriter seedNotExistingWriter = new FileWriter(seedNotExistingErrorPath);
-            seedNotExistingWriter.append("path id, seed id\n");
-            seedNotExistingWriter.flush();
-            seedNotExistingWriter.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
+
+        MissingSessions = new HashSet<>();
+        MissingSessionsPath = correctedBasicPathErrorsPath + "\\MissingSessions.csv";
+
+        seedsDontExistButInOptimizedFidelity = new HashSet<>();
+        seedsDontExistButInOptimizedFidelityPath = correctedBasicPathErrorsPath + "\\seedsDontExistButInOptimizedFidelity.csv";
+
+        seedNotExistingErrorPath = correctedBasicPathErrorsPath + "\\seedNotExistingError.csv";
+        duplicatesWithTheSameIdsErrorPath = correctedBasicPathErrorsPath + "\\duplicatesWithTheSameIdsError.csv";
+
+//
+//        try {
+//            FileWriter seedNotExistingWriter = new FileWriter(duplicatesWithTheSameIdsErrorPath);
+//            seedNotExistingWriter.append("path id\n");
+//            seedNotExistingWriter.flush();
+//            seedNotExistingWriter.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+//
+//        try {
+//            FileWriter seedNotExistingWriter = new FileWriter(seedNotExistingErrorPath);
+//            seedNotExistingWriter.append("path id, seed id\n");
+//            seedNotExistingWriter.flush();
+//            seedNotExistingWriter.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
     }
     /*
     public static void checkErrorsWithMultipulBasicPathInfosOptimizations(String path){

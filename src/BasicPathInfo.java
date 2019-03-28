@@ -247,6 +247,7 @@ public class BasicPathInfo {
             int id = Integer.parseInt(split[2]); //previous: int id = Integer.parseInt(split[0]);
             int sessionId = Integer.parseInt(split[1]);
             Session mySession = Session.sessions.get(sessionId);
+
             //int packageId;
             int levelId = Integer.parseInt(split[4]); //previous: int levelId = Integer.parseInt(split[3]);
             String pathId = split[5]; //previous: String pathId = split[4];
@@ -257,6 +258,10 @@ public class BasicPathInfo {
             int timeBin = Integer.parseInt(split[26]); // new edit
 
 
+            if(mySession == null){
+                Main.MissingSessions.add(new StringTuple(sessionId + "", seedPathId));
+                throw new Exception("Missing session");
+            }
             /*
             if(!checkTimeBin(timeBin, duration))
                 throw new Exception("The time bin calculation was not correct");
@@ -279,13 +284,13 @@ public class BasicPathInfo {
                     //I already exist! (A fake one...)
                     if(seed.id >=0) {
                         //add to the errors list
-                        /*
-                        FileWriter seedNotExistingErrorWriter = new FileWriter(Main.duplicatesWithTheSameIdsErrorPath,true);
-                        seedNotExistingErrorWriter.append("" + seedPathId + "\n");
-                        seedNotExistingErrorWriter.flush();
-                        seedNotExistingErrorWriter.close();
+//
+//                        FileWriter seedNotExistingErrorWriter = new FileWriter(Main.duplicatesWithTheSameIdsErrorPath,true);
+//                        seedNotExistingErrorWriter.append("" + seedPathId + "\n");
+//                        seedNotExistingErrorWriter.flush();
+//                        seedNotExistingErrorWriter.close();
 
-                        */
+
                         //throw new Exception("Weird! there was not supposed to be another seed like me...");
                         return null; //ignore this row
                     }
