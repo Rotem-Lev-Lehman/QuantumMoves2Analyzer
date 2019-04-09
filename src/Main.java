@@ -27,9 +27,9 @@ public class Main {
     public static String MissingSessionsPath;
 
     public static void main(String[] args){
-        mainPath = "C:\\Users\\Rotem\\Desktop\\עבודה אצל קובי\\quantum moves\\Quantum moves 2";
-        resultsPath = mainPath + "\\javaResults";
-        scoresPath = resultsPath + "\\scores";
+        mainPath = "C:\\Users\\Rotem\\Desktop\\עבודה אצל קובי\\quantum moves\\Quantum moves 2\\data versions\\data version 2\\Updated_session_table\\Updated_session_table";
+        resultsPath = mainPath + "\\results";
+        //scoresPath = resultsPath + "\\scores";
 
         initializeErrorsPath();
 
@@ -80,6 +80,7 @@ public class Main {
 
         //Run testers:
         //runFirstTester();
+        runSecondTester();
     }
 
     private static void SaveErrorMissingSessions() {
@@ -112,6 +113,19 @@ public class Main {
         //firstTester.HowMuchOptimizationsIterationsForBestSeed();
 
         System.out.println("Done first tester");
+    }
+
+    private static void runSecondTester(){
+        System.out.println("Starting second tester");
+
+        String secondResults = resultsPath + "\\secondResults";
+        String secondErrors = errorsPath + "\\secondErrors";
+
+        SecondTester secondTester = new SecondTester(secondResults, secondErrors);
+
+        secondTester.CheckHowUsersUseOptimizationOverTime();
+
+        System.out.println("Done second tester");
     }
 
     private static void WriteToCsvSeedsDontExistButInOptimizedFidelity() {
@@ -163,7 +177,7 @@ public class Main {
     }
 
     private static void initializeErrorsPath(){
-        errorsPath = mainPath + "\\errorsWithTheData";
+        errorsPath = mainPath + "\\errors with version 2\\errors with current version";
 
         correctedBasicPathErrorsPath = errorsPath + "\\Corrected path errors";
 
@@ -398,7 +412,7 @@ public class Main {
         System.out.println("Finished calculating time bins scores for each level");
     }
 
-    private static double[] calculateMeanAndSD(List<Double> numArray)
+    public static double[] calculateMeanAndSD(List<Double> numArray)
     {
         double sum = 0.0, standardDeviation = 0.0;
         int length = numArray.size();

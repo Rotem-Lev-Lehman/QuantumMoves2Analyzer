@@ -30,6 +30,11 @@ public class User {
     //best seed:
     private BasicPathInfo bestSeed;
 
+    //optimization over time:
+    private List<PriorityQueue<OptimizationInteractionOverTime>> interactionOverTimeForEachLevel;
+    private List<List<TwoIntTuple>> level_gamesNumAndOptimizationUntilNow;
+    private boolean alreadyCalculatedOptimizationOverTime;
+
     public static final int levelsNum = 20;
     public static final int timeBinsNum = 12;
 
@@ -112,6 +117,14 @@ public class User {
 
         //best seed:
         this.bestSeed = null;
+
+        interactionOverTimeForEachLevel = new ArrayList<>(levelsNum);
+        level_gamesNumAndOptimizationUntilNow = new ArrayList<>(levelsNum);
+        for(int i = 0; i < levelsNum; i++){
+            interactionOverTimeForEachLevel.add(new PriorityQueue<>());
+            level_gamesNumAndOptimizationUntilNow.add(new ArrayList<>());
+        }
+        alreadyCalculatedOptimizationOverTime = false;
     }
 
     public int getUserId() {
@@ -398,5 +411,41 @@ public class User {
             return bestSeed.getOptimization().getOptimizationIteration();
 
         return 0;
+    }
+
+    public List<List<TwoIntTuple>> getOptimizationInteractionOverTime(){
+        calculateInteractionOfOptimizationOverTime();
+        return level_gamesNumAndOptimizationUntilNow;
+    }
+
+    private void calculateInteractionOfOptimizationOverTime(){
+        if(alreadyCalculatedOptimizationOverTime)
+            return;
+        alreadyCalculatedOptimizationOverTime = true;
+
+        for(Session session : sessions){
+            for(BasicPathInfo seed : session.getBasicPathInfos()){
+                boolean optimized = false;
+                if(seed.getOptimization() != null)
+                    optimized = true;
+                OptimizationInteractionOverTime opt = new OptimizationInteractionOverTime(optimized, seed.getCreatedAt());
+                interactionOverTimeForEachLevel.get(seed.getLevelId()).add(opt);
+            }
+        }
+
+        for(int i = 0; i < levelsNum; i++){
+            PriorityQueue<OptimizationInteractionOverTime> curr = interactionOverTimeForEachLevel.get(i);
+            int gamesNum = 0;
+            int optimizationsNum = 0;
+            while(!curr.isEmpty()){
+                OptimizationInteractionOverTime opt = curr.poll();
+                gamesNum++;
+                if(opt.isOptimized())
+                    optimizationsNum++;
+                TwoIntTuple tuple = new TwoIntTuple(gamesNum, optimizationsNum);
+                level_gamesNumAndOptimizationUntilNow.get(i).add(tuple);
+            }
+        }
+        //done :)
     }
 }
