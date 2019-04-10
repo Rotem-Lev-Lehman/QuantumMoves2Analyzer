@@ -50,12 +50,12 @@ public class SecondTester extends Tester {
                     double[] meanAndSD = Main.calculateMeanAndSD(level_gameNum_optNumForEachUser.get(i).get(j));
                     meanAndSDForEachGameNum.add(meanAndSD);
                 }
-                writer.append("" + i + ",average,");
+                writer.append("" + i + ",average,,");
                 for(double[] meanAndSD : meanAndSDForEachGameNum){
                     writer.append("," + meanAndSD[0]);
                 }
                 writer.append("\n");
-                writer.append("" + i + ",standard deviation,");
+                writer.append("" + i + ",standard deviation,,");
                 for(double[] meanAndSD : meanAndSDForEachGameNum){
                     writer.append("," + meanAndSD[1]);
                 }

@@ -27,14 +27,14 @@ public class Main {
     public static String MissingSessionsPath;
 
     public static void main(String[] args){
-        mainPath = "C:\\Users\\Rotem\\Desktop\\עבודה אצל קובי\\quantum moves\\Quantum moves 2\\data versions\\data version 2\\Updated_session_table\\Updated_session_table";
-        resultsPath = mainPath + "\\results";
+        mainPath = "C:\\Users\\Rotem\\Desktop\\עבודה אצל קובי\\quantum moves\\Quantum moves 2\\data versions\\data version 1";
+        resultsPath = mainPath + "\\javaResults";
         //scoresPath = resultsPath + "\\scores";
 
         initializeErrorsPath();
 
         String sessionsPath = mainPath + "\\sessions.csv";
-        String basicPathInfoPath = mainPath + "\\basic_path_info_corrected.csv";
+        String basicPathInfoPath = mainPath + "\\basic_path_info.csv";
         String optimizedFidelityPath = mainPath + "\\optimized_fidelity.csv";
         String userInteractionsPath = mainPath + "\\user_interaction.csv";
 
@@ -118,11 +118,9 @@ public class Main {
     private static void runSecondTester(){
         System.out.println("Starting second tester");
 
-        /*
         String secondResults = resultsPath + "\\secondResults";
         String secondErrors = errorsPath + "\\secondErrors";
-        */
-        SecondTester secondTester = new SecondTester(resultsPath, errorsPath);
+        SecondTester secondTester = new SecondTester(secondResults, secondErrors);
 
         secondTester.CheckHowUsersUseOptimizationOverTime();
 
@@ -178,7 +176,7 @@ public class Main {
     }
 
     private static void initializeErrorsPath(){
-        errorsPath = mainPath + "\\errors with version 2\\errors with current version";
+        errorsPath = mainPath + "\\errorsWithTheData";
 
         correctedBasicPathErrorsPath = errorsPath + "\\Corrected path errors";
 

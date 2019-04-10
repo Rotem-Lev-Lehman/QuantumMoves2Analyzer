@@ -244,18 +244,28 @@ public class BasicPathInfo {
 
             26 - "time_bin"
              */
-            int id = Integer.parseInt(split[2]); //previous: int id = Integer.parseInt(split[0]);
+            int id = Integer.parseInt(split[0]);
+            //int id = Integer.parseInt(split[2]); //previous: int id = Integer.parseInt(split[0]);
             int sessionId = Integer.parseInt(split[1]);
             Session mySession = Session.sessions.get(sessionId);
 
             //int packageId;
-            int levelId = Integer.parseInt(split[4]); //previous: int levelId = Integer.parseInt(split[3]);
-            String pathId = split[5]; //previous: String pathId = split[4];
-            String seedPathId = split[6]; //previous: String seedPathId = split[5];
-            int optimizationIteration = Integer.parseInt(split[7]); //previous: int optimizationIteration = Integer.parseInt(split[6]);
-            double duration = Double.parseDouble(split[8]); //previous: double duration = Double.parseDouble(split[7]);
-            double finalFidelity = Double.parseDouble(split[9]); //previous: double finalFidelity = Double.parseDouble(split[8]);
-            int timeBin = Integer.parseInt(split[26]); // new edit
+            int levelId = Integer.parseInt(split[3]);
+            //int levelId = Integer.parseInt(split[4]); //previous: int levelId = Integer.parseInt(split[3]);
+            String pathId = split[4];
+            //String pathId = split[5]; //previous: String pathId = split[4];
+            String seedPathId = split[5];
+            //String seedPathId = split[6]; //previous: String seedPathId = split[5];
+            int optimizationIteration = Integer.parseInt(split[6]);
+            //int optimizationIteration = Integer.parseInt(split[7]); //previous: int optimizationIteration = Integer.parseInt(split[6]);
+            double duration = Double.parseDouble(split[7]);
+            //double duration = Double.parseDouble(split[8]); //previous: double duration = Double.parseDouble(split[7]);
+            double finalFidelity = Double.parseDouble(split[8]);
+            //double finalFidelity = Double.parseDouble(split[9]); //previous: double finalFidelity = Double.parseDouble(split[8]);
+            int timeBin = (int)Math.floor(duration*10);
+            if(timeBin == 12)
+                timeBin = 11;
+            //int timeBin = Integer.parseInt(split[26]); // new edit
 
 
             if(mySession == null){
@@ -275,8 +285,10 @@ public class BasicPathInfo {
             //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-            Date createdAt = formatter.parse(split[14]); //previous: Date createdAt = formatter.parse(split[13]);
-            Date updatedAt = formatter.parse(split[15]); //previous: Date updatedAt = formatter.parse(split[14]);
+            Date createdAt = formatter.parse(split[13]);
+            //Date createdAt = formatter.parse(split[14]); //previous: Date createdAt = formatter.parse(split[13]);
+            Date updatedAt = formatter.parse(split[14]);
+            //Date updatedAt = formatter.parse(split[15]); //previous: Date updatedAt = formatter.parse(split[14]);
             basicPathInfo = new BasicPathInfo(id, mySession, levelId, pathId, seedPathId, optimizationIteration, duration, finalFidelity, timeBin, createdAt, updatedAt);
 
             BasicPathInfo seed = basicPathInfos.get(seedPathId);
