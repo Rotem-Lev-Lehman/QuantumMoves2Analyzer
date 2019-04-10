@@ -32,7 +32,7 @@ public class SecondTester extends Tester {
 
                     for(int j = 0; j < gamesNumAndOptimizationUntilNow.size(); j++){
                         if(level_gameNum_optNumForEachUser.get(i).size() < j + 1)
-                            level_gameNum_optNumForEachUser.add(new ArrayList<>());
+                            level_gameNum_optNumForEachUser.get(i).add(new ArrayList<>());
 
                         level_gameNum_optNumForEachUser.get(i).get(j).add((double)gamesNumAndOptimizationUntilNow.get(j).getSecond());
                     }

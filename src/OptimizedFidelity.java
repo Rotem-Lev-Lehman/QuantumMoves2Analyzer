@@ -132,8 +132,23 @@ public class OptimizedFidelity {
         try {
             String[] split = str.split(";");
             for(int i = 0; i < split.length;i++)
-                split[i] = split[i].replaceAll("\"","");
+                split[i] = split[i].replaceAll("\"","").replaceAll(",",".");
 
+            /*
+            new order:
+
+            0 - id;
+            1 - "session_id";
+            2 - "package_id";
+            3 - "path_id";
+            4 - "seed_path_id";
+            5 - "iteration";
+            6 - "fidelity";
+            7 - "is_intermediate_step_boolean";
+            8 - "client_time";
+            9 - "created_at";
+            10 - "updated_at"
+             */
             int id = Integer.parseInt(split[0]);
             String seedPathStr = split[4]; //seed path id
             BasicPathInfo seedPathId = BasicPathInfo.basicPathInfos.get(seedPathStr);
@@ -142,7 +157,8 @@ public class OptimizedFidelity {
             int isIntermediateStepInt = Integer.parseInt(split[7]);
             boolean isIntermediateStep = isIntermediateStepInt == 1; // true = 1, false = 0
             //int clientTime;
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             Date createdAt = formatter.parse(split[9]);
             Date updatedAt = formatter.parse(split[10]);

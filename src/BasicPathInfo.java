@@ -259,8 +259,9 @@ public class BasicPathInfo {
 
 
             if(mySession == null){
-                Main.MissingSessions.add(new StringTuple(sessionId + "", seedPathId));
-                throw new Exception("Missing session");
+                //Main.MissingSessions.add(new StringTuple(sessionId + "", seedPathId));
+                //throw new Exception("Missing session");
+                return null;
             }
             /*
             if(!checkTimeBin(timeBin, duration))

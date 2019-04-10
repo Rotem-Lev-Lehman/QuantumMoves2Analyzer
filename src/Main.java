@@ -118,10 +118,11 @@ public class Main {
     private static void runSecondTester(){
         System.out.println("Starting second tester");
 
+        /*
         String secondResults = resultsPath + "\\secondResults";
         String secondErrors = errorsPath + "\\secondErrors";
-
-        SecondTester secondTester = new SecondTester(secondResults, secondErrors);
+        */
+        SecondTester secondTester = new SecondTester(resultsPath, errorsPath);
 
         secondTester.CheckHowUsersUseOptimizationOverTime();
 

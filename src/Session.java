@@ -30,7 +30,8 @@ public class Session {
             while (scanner.hasNextLine()){
                 String line = scanner.nextLine();
                 Session curr = Session.Parse(line);
-                sessions.put(curr.id, curr);
+                if(curr != null)
+                    sessions.put(curr.id, curr);
             }
             scanner.close();
         } catch (Exception e) {
@@ -111,11 +112,19 @@ public class Session {
             int id = Integer.parseInt(split[0]);
             //int gameId;
             //int installId;
-            int userId = Integer.parseInt(split[3]);
+            int userId;
+            try {
+                userId = Integer.parseInt(split[3]);
+            }catch (Exception e){
+                //do not have a user
+                throw new Exception("User does not exist");
+                //return null;
+            }
             //int metricId;
             //String sessionToken;
             //String authType;
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             Date createdAt = formatter.parse(split[7]);
             Date updatedAt = formatter.parse(split[8]);
