@@ -448,4 +448,33 @@ public class User {
         }
         //done :)
     }
+
+    public List<List<IntBoolTuple>> getOptimizationIsDoneInEachTime() {
+        calculateInteractionOfOptimizationOverTime();
+
+        List<List<IntBoolTuple>> optimizationIsDoneInEachTime = new ArrayList<>(levelsNum);
+        for(int i = 0; i < levelsNum; i++){
+            optimizationIsDoneInEachTime.add(new ArrayList<>());
+        }
+
+        for(int i = 0; i < levelsNum; i++){
+            List<TwoIntTuple> curr = level_gamesNumAndOptimizationUntilNow.get(i);
+            int previousOptimizationNum = 0;
+            for(int j = 0; j < curr.size(); j++){
+                boolean flag = true;
+                int curr_optimizations = curr.get(j).getSecond();
+                if(previousOptimizationNum == curr_optimizations)
+                    flag = false;
+
+                previousOptimizationNum = curr_optimizations;
+
+                IntBoolTuple tuple = new IntBoolTuple(j, flag);
+                optimizationIsDoneInEachTime.get(i).add(tuple);
+            }
+        }
+
+        return optimizationIsDoneInEachTime;
+    }
+
+
 }

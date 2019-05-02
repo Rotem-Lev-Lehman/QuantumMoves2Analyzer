@@ -122,7 +122,9 @@ public class Main {
         String secondErrors = errorsPath + "\\secondErrors";
         SecondTester secondTester = new SecondTester(secondResults, secondErrors);
 
-        secondTester.CheckHowUsersUseOptimizationOverTime();
+        //secondTester.CheckHowUsersUseOptimizationOverTime();
+        //secondTester.HistogramOfUsersWithPercentageOfGamesOptimizedInAIntervalOfGames();
+        secondTester.Histogram_Of_People_Who_Done_Amount_Of_Games();
 
         System.out.println("Done second tester");
     }
