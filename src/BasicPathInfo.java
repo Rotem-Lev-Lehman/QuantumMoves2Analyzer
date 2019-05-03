@@ -378,4 +378,10 @@ public class BasicPathInfo {
         */
         return this.timeBin;
     }
+
+    public double getFinalScore(){
+        //calculated by: fidelity/highest challenge curve
+        return finalFidelity / ChallengeCurves.getHighestChallenge(levelId, timeBin);
+
+    }
 }
