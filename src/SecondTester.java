@@ -305,4 +305,6 @@ public class SecondTester extends Tester {
         }
         return (double) count / (double) gamesNumAndOptimizationIsDone.size();
     }
+
+
 }

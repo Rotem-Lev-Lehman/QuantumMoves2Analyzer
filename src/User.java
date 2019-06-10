@@ -35,6 +35,11 @@ public class User {
     private List<List<TwoIntTuple>> level_gamesNumAndOptimizationUntilNow;
     private boolean alreadyCalculatedOptimizationOverTime;
 
+    //optimizations after first one:
+    private Date firstOptimizationDate;
+    private List<Integer> numOfPressOnOptAfterFirstOptimization;
+    private List<Integer> numOfGamesAfterFirstOptimization;
+
     public static final int levelsNum = 20;
     public static final int timeBinsNum = 12;
 
@@ -125,6 +130,15 @@ public class User {
             level_gamesNumAndOptimizationUntilNow.add(new ArrayList<>());
         }
         alreadyCalculatedOptimizationOverTime = false;
+
+        //optimizations after first one:
+        firstOptimizationDate = null;
+        numOfPressOnOptAfterFirstOptimization = new ArrayList<>(levelsNum);
+        numOfGamesAfterFirstOptimization = new ArrayList<>(levelsNum);
+        for(int i = 0; i < levelsNum; i++){
+            numOfPressOnOptAfterFirstOptimization.add(0);
+            numOfGamesAfterFirstOptimization.add(0);
+        }
     }
 
     public int getUserId() {
@@ -423,15 +437,7 @@ public class User {
             return;
         alreadyCalculatedOptimizationOverTime = true;
 
-        for(Session session : sessions){
-            for(BasicPathInfo seed : session.getBasicPathInfos()){
-                boolean optimized = false;
-                if(seed.getOptimization() != null)
-                    optimized = true;
-                OptimizationInteractionOverTime opt = new OptimizationInteractionOverTime(optimized, seed.getCreatedAt());
-                interactionOverTimeForEachLevel.get(seed.getLevelId()).add(opt);
-            }
-        }
+        makeInteractionOverTimeForEachLevel();
 
         for(int i = 0; i < levelsNum; i++){
             PriorityQueue<OptimizationInteractionOverTime> curr = interactionOverTimeForEachLevel.get(i);
@@ -446,7 +452,25 @@ public class User {
                 level_gamesNumAndOptimizationUntilNow.get(i).add(tuple);
             }
         }
+
         //done :)
+    }
+
+    private void makeInteractionOverTimeForEachLevel(){
+        interactionOverTimeForEachLevel = new ArrayList<>(levelsNum);
+        for(int i = 0; i < levelsNum; i++){
+            interactionOverTimeForEachLevel.add(new PriorityQueue<>());
+        }
+
+        for(Session session : sessions){
+            for(BasicPathInfo seed : session.getBasicPathInfos()){
+                boolean optimized = false;
+                if(seed.getOptimization() != null)
+                    optimized = true;
+                OptimizationInteractionOverTime opt = new OptimizationInteractionOverTime(optimized, seed.getCreatedAt());
+                interactionOverTimeForEachLevel.get(seed.getLevelId()).add(opt);
+            }
+        }
     }
 
     public List<List<IntBoolTuple>> getOptimizationIsDoneInEachTime() {
@@ -473,6 +497,50 @@ public class User {
             }
         }
 
+        return optimizationIsDoneInEachTime;
+    }
+
+    public List<List<Boolean>> calculateAvgPressOnOptAfterFirstOpt(){
+        List<List<Boolean>> optimizationIsDoneInEachTime = new ArrayList<>(levelsNum);
+        for(int i = 0; i < levelsNum; i++){
+            optimizationIsDoneInEachTime.add(new ArrayList<>());
+        }
+
+        //search first:
+        for(Session session : sessions){
+            for(BasicPathInfo pathInfo : session.getBasicPathInfos()){
+                BasicPathInfo opt = pathInfo.getOptimization();
+                if(opt != null){
+                    if(firstOptimizationDate == null || opt.getCreatedAt().compareTo(firstOptimizationDate) < 0)
+                        firstOptimizationDate = opt.getCreatedAt();
+                }
+            }
+        }
+
+        makeInteractionOverTimeForEachLevel();
+
+        //use all of the paths after the first opt:
+        for(int i = 0; i < levelsNum; i++) {
+            OptimizationInteractionOverTime optimizationInteractionOverTime = interactionOverTimeForEachLevel.get(i).poll();
+            // TODO: 6/10/2019 continue here 
+            if (optimizationInteractionOverTime.getTimeOfGame().compareTo(firstOptimizationDate) > 0) {
+                boolean opt = optimizationInteractionOverTime.isOptimized();
+                if (opt) {
+                    int curr = numOfPressOnOptAfterFirstOptimization.get(i);
+                    numOfPressOnOptAfterFirstOptimization.set(i, curr + 1);
+                }
+                int curr = numOfGamesAfterFirstOptimization.get(i);
+                numOfGamesAfterFirstOptimization.set(i, curr + 1);
+            }
+
+        }
+
+        for(int i = 0; i < levelsNum; i++){
+            if(numOfGamesAfterFirstOptimization.get(i) == 0)
+                ans.add(0.0);
+            else
+                ans.add((double)numOfPressOnOptAfterFirstOptimization.get(i) / (double)numOfGamesAfterFirstOptimization.get(i));
+        }
         return optimizationIsDoneInEachTime;
     }
 
