@@ -522,7 +522,7 @@ public class User {
         //use all of the paths after the first opt:
         for(int i = 0; i < levelsNum; i++) {
             OptimizationInteractionOverTime optimizationInteractionOverTime = interactionOverTimeForEachLevel.get(i).poll();
-            // TODO: 6/10/2019 continue here 
+            // TODO: 6/10/2019 continue here
             if (optimizationInteractionOverTime.getTimeOfGame().compareTo(firstOptimizationDate) > 0) {
                 boolean opt = optimizationInteractionOverTime.isOptimized();
                 if (opt) {
