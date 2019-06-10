@@ -129,16 +129,20 @@ public class SecondTester extends Tester {
                 }
             }
 
-            writer.append("level id,(average/standard deviation),\\,interval num(each containing " + intervalSize + " games)");
+            writer.append("level id,(average/standard deviation/amount),\\,interval num(each containing " + intervalSize + " games)");
             for(int i = 0; i < maxIntervalsNum; i++)
                 writer.append("," + (i + 1));
             writer.append("\n");
 
             for(int i = 0; i < User.levelsNum; i++){
                 List<double[]> meanAndSDForEachGameNum = new ArrayList<>();
+                List<Integer> amountOfUsers = new ArrayList<>();
                 for(int j = 0; j < level_Interval_optNumForEachUser.get(i).size(); j++){
-                    double[] meanAndSD = Main.calculateMeanAndSD(level_Interval_optNumForEachUser.get(i).get(j));
+                    List<Double> curr = level_Interval_optNumForEachUser.get(i).get(j);
+                    double[] meanAndSD = Main.calculateMeanAndSD(curr);
                     meanAndSDForEachGameNum.add(meanAndSD);
+                    int amount = curr.size();
+                    amountOfUsers.add(amount);
                 }
                 writer.append("" + i + ",average,,");
                 for(double[] meanAndSD : meanAndSDForEachGameNum){
@@ -148,6 +152,11 @@ public class SecondTester extends Tester {
                 writer.append("" + i + ",standard deviation,,");
                 for(double[] meanAndSD : meanAndSDForEachGameNum){
                     writer.append("," + meanAndSD[1]);
+                }
+                writer.append("\n");
+                writer.append("" + i + ",amount,,");
+                for(Integer amount : amountOfUsers){
+                    writer.append("," + amount);
                 }
                 writer.append("\n");
             }
