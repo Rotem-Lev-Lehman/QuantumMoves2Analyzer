@@ -75,9 +75,15 @@ public class SecondTester extends Tester {
     }
 
     public void HistogramOfUsersWithPercentageOfGamesOptimizedInAIntervalOfGames() {
+        /*
         System.out.println("Starting HistogramOfUsersWithPercentageOfGamesOptimizedInAIntervalOfGames");
 
         String path = resultsFolder + "\\HistogramOfUsersWithPercentageOfGamesOptimizedInAIntervalOfGames.csv";
+        */
+
+        System.out.println("Starting HistogramOfUsersWithPercentageOfGamesOptimizedInAIntervalOfGames_After_First_Optimization");
+
+        String path = resultsFolder + "\\HistogramOfUsersWithPercentageOfGamesOptimizedInAIntervalOfGames_After_First_Optimization.csv";
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path));
@@ -90,7 +96,8 @@ public class SecondTester extends Tester {
                 level_Interval_optNumForEachUser.add(new ArrayList<>());
             }
             for(User user : User.users.values()) {
-                List<List<IntBoolTuple>> level_gamesNumAndOptimizationIsDone = user.getOptimizationIsDoneInEachTime();
+                //List<List<IntBoolTuple>> level_gamesNumAndOptimizationIsDone = user.getOptimizationIsDoneInEachTime();
+                List<List<IntBoolTuple>> level_gamesNumAndOptimizationIsDone = user.calculateAvgPressOnOptAfterFirstOpt();
                 for (int i = 0; i < User.levelsNum; i++) {
                     int currIntervalRemainders = intervalSize;
                     int currIntervalIndex = 0;
@@ -167,13 +174,19 @@ public class SecondTester extends Tester {
             e.printStackTrace();
         }
 
-        System.out.println("Done HistogramOfUsersWithPercentageOfGamesOptimizedInAIntervalOfGames");
+        //System.out.println("Done HistogramOfUsersWithPercentageOfGamesOptimizedInAIntervalOfGames");
+        System.out.println("Done HistogramOfUsersWithPercentageOfGamesOptimizedInAIntervalOfGames_After_First_Optimization");
     }
 
     public void Histogram_Of_People_Who_Done_Amount_Of_Games() {
+        /*
         System.out.println("Starting Histogram_Of_People_Who_Done_Amount_Of_Games");
 
         String path = resultsFolder + "\\Histogram_Of_People_Who_Done_Amount_Of_Games.csv";
+        */
+        System.out.println("Starting Histogram_Of_People_Who_Done_Amount_Of_Games_After_First_Optimization");
+
+        String path = resultsFolder + "\\Histogram_Of_People_Who_Done_Amount_Of_Games_After_First_Optimization.csv";
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path));
@@ -189,7 +202,8 @@ public class SecondTester extends Tester {
             }
 
             for(User user : User.users.values()) {
-                List<List<IntBoolTuple>> level_gamesNumAndOptimizationIsDone = user.getOptimizationIsDoneInEachTime();
+                //List<List<IntBoolTuple>> level_gamesNumAndOptimizationIsDone = user.getOptimizationIsDoneInEachTime();
+                List<List<IntBoolTuple>> level_gamesNumAndOptimizationIsDone = user.calculateAvgPressOnOptAfterFirstOpt();
                 for (int i = 0; i < User.levelsNum; i++) {
                     /*
                     int currIntervalRemainders = intervalSize;
@@ -294,7 +308,8 @@ public class SecondTester extends Tester {
             e.printStackTrace();
         }
 
-        System.out.println("Done Histogram_Of_People_Who_Done_Amount_Of_Games");
+        //System.out.println("Done Histogram_Of_People_Who_Done_Amount_Of_Games");
+        System.out.println("Done Histogram_Of_People_Who_Done_Amount_Of_Games_After_First_Optimization");
     }
 
     private Double calculate_percentage_of_optimizations(List<IntBoolTuple> gamesNumAndOptimizationIsDone) {

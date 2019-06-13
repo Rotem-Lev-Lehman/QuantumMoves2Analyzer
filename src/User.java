@@ -500,8 +500,8 @@ public class User {
         return optimizationIsDoneInEachTime;
     }
 
-    public List<List<Boolean>> calculateAvgPressOnOptAfterFirstOpt(){
-        List<List<Boolean>> optimizationIsDoneInEachTime = new ArrayList<>(levelsNum);
+    public List<List<IntBoolTuple>> calculateAvgPressOnOptAfterFirstOpt(){
+        List<List<IntBoolTuple>> optimizationIsDoneInEachTime = new ArrayList<>(levelsNum);
         for(int i = 0; i < levelsNum; i++){
             optimizationIsDoneInEachTime.add(new ArrayList<>());
         }
@@ -521,26 +521,22 @@ public class User {
 
         //use all of the paths after the first opt:
         for(int i = 0; i < levelsNum; i++) {
-            OptimizationInteractionOverTime optimizationInteractionOverTime = interactionOverTimeForEachLevel.get(i).poll();
-            // TODO: 6/10/2019 continue here
-            if (optimizationInteractionOverTime.getTimeOfGame().compareTo(firstOptimizationDate) > 0) {
-                boolean opt = optimizationInteractionOverTime.isOptimized();
-                if (opt) {
-                    int curr = numOfPressOnOptAfterFirstOptimization.get(i);
-                    numOfPressOnOptAfterFirstOptimization.set(i, curr + 1);
+            PriorityQueue<OptimizationInteractionOverTime> curr = interactionOverTimeForEachLevel.get(i);
+            int j = 0;
+            while (!curr.isEmpty()) {
+                OptimizationInteractionOverTime optimizationInteractionOverTime = curr.poll();
+                if(firstOptimizationDate != null) {
+                    if (optimizationInteractionOverTime.getTimeOfGame().compareTo(firstOptimizationDate) > 0) {
+                        boolean opt = optimizationInteractionOverTime.isOptimized();
+                        optimizationIsDoneInEachTime.get(i).add(new IntBoolTuple(j, opt));
+                        j++;
+                    }
                 }
-                int curr = numOfGamesAfterFirstOptimization.get(i);
-                numOfGamesAfterFirstOptimization.set(i, curr + 1);
+                else
+                    break;
             }
-
         }
 
-        for(int i = 0; i < levelsNum; i++){
-            if(numOfGamesAfterFirstOptimization.get(i) == 0)
-                ans.add(0.0);
-            else
-                ans.add((double)numOfPressOnOptAfterFirstOptimization.get(i) / (double)numOfGamesAfterFirstOptimization.get(i));
-        }
         return optimizationIsDoneInEachTime;
     }
 
